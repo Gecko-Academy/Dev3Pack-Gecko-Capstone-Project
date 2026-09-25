@@ -8,8 +8,11 @@ A student's own capstone project for the Dev3Pack AI-Engineering bootcamp. It st
 a clone of a course-provided repository and becomes the student's own: they push it to
 their own GitHub account and add one project per day of week 3.
 
-Nothing here is marked. The graded capstone is a different repository and a different
-thing; do not conflate them.
+Only project 00 is scored: it is the weekly challenge, worth up to 500 toward session
+10, due Monday 28 September. The week-3 daily projects are not marked.
+
+The graded CAPSTONE is a different repository and a different thing again. Do not
+conflate the three.
 
 ## How to help
 

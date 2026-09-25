@@ -7,7 +7,7 @@
 
 One repository that becomes **yours**. One project a day. One thing you can demo at the end and explain when it breaks.
 
-**Week 3, 28 September – 2 October 2026.** Optional showcase on Saturday 3 October. Nothing here is marked.
+**Week 3, 28 September – 2 October 2026.** Optional showcase on Saturday 3 October. Only project 00 is scored, as the weekly challenge; the week-3 projects are not marked.
 
 ## Contents
 
