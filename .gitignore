@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.python-version
+
+# Secrets. Never commit one; there is nothing here that needs one.
+.env
+*.key
+*.pem
+keypair*.json
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Tooling
+.ruff_cache/
+.pytest_cache/
+.mypy_cache/
+.DS_Store
