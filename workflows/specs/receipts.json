@@ -1,0 +1,114 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Receipts",
+    "version": "1.0.0",
+    "description": "A tiny receipts API that exists only on disk, so a first call costs nothing."
+  },
+  "servers": [{ "url": "https://api.example.invalid/v1" }],
+  "paths": {
+    "/receipts": {
+      "get": {
+        "operationId": "listReceipts",
+        "summary": "List receipts, newest first.",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": true,
+            "description": "Only receipts in this state.",
+            "schema": { "type": "string", "enum": ["paid", "void", "pending"] }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "How many to return, 1 to 100.",
+            "schema": { "type": "integer", "minimum": 1, "maximum": 100, "default": 20 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The matching receipts.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["receipts"],
+                  "properties": {
+                    "receipts": { "type": "array", "items": { "$ref": "#/components/schemas/Receipt" } }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createReceipt",
+        "summary": "Record a receipt.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["amount_minor", "currency", "issued_at"],
+                "properties": {
+                  "amount_minor": { "type": "integer", "description": "Whole units of the smallest denomination. 1.50 USD is 150." },
+                  "currency": { "type": "string", "enum": ["USD", "BRL", "EUR"] },
+                  "issued_at": { "type": "string", "format": "date-time" },
+                  "memo": { "type": "string", "maxLength": 140 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The stored receipt.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Receipt" } } }
+          }
+        }
+      }
+    },
+    "/receipts/{receipt_id}": {
+      "get": {
+        "operationId": "getReceipt",
+        "summary": "Fetch one receipt by id.",
+        "parameters": [
+          {
+            "name": "receipt_id",
+            "in": "path",
+            "required": true,
+            "description": "The receipt id, as returned by listReceipts.",
+            "schema": { "type": "string", "pattern": "^rcpt_[a-z0-9]{8}$" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The receipt.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Receipt" } } }
+          },
+          "404": { "description": "No such receipt." }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Receipt": {
+        "type": "object",
+        "required": ["id", "status", "amount_minor", "currency", "issued_at"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^rcpt_[a-z0-9]{8}$" },
+          "status": { "type": "string", "enum": ["paid", "void", "pending"] },
+          "amount_minor": { "type": "integer" },
+          "currency": { "type": "string", "enum": ["USD", "BRL", "EUR"] },
+          "issued_at": { "type": "string", "format": "date-time" },
+          "memo": { "type": "string" }
+        }
+      }
+    }
+  }
+}

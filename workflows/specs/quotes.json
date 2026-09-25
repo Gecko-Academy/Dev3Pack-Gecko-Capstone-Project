@@ -1,0 +1,25 @@
+{
+  "openapi": "3.0.3",
+  "info": { "title": "Quotes", "version": "0.1.0" },
+  "servers": [{ "url": "http://api.example.invalid" }],
+  "paths": {
+    "/quote": {
+      "get": {
+        "parameters": [
+          { "name": "pair", "in": "query", "schema": { "type": "string" } },
+          { "name": "side", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "ok" } }
+      }
+    },
+    "/quote/{id}/accept": {
+      "post": {
+        "parameters": [{ "name": "id", "in": "path", "schema": { "type": "string" } }],
+        "requestBody": {
+          "content": { "application/json": { "schema": { "type": "object" } } }
+        },
+        "responses": { "200": { "description": "ok" } }
+      }
+    }
+  }
+}
