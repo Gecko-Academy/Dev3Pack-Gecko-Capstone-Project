@@ -26,9 +26,29 @@ Three separate failures in twenty minutes: a call invented rather than derived, 
 paywall the agent could not cross, a credential in a place it must never be. The third
 one is the expensive one and it is the one nobody notices.
 
-## Positioning
+## What Gecko is, in the founder's words
 
-> PENDING FOUNDER RULING. Do not fill this in.
+Gecko is how an agent moves money on Solana and proves it landed as asked.
+
+Ask once. Gecko finds the program and the mechanism, builds the call, rehearses its
+effect on a fork against the request you pinned, refuses by field when they disagree,
+hands unsigned bytes to the signer you already have, reads the ledger, and writes the
+one receipt that says what moved.
+
+Execution comes first. The check is the second paragraph, not the headline. Two
+comparisons the founder uses, and both are deliberately partial: Visa is every program
+and every signer, Waze is the route and the hazard and never the car. Gecko holds no
+key and signs nothing.
+
+**Do not describe this project, or Gecko, as an API comprehension layer.** That line is
+retired. It describes the engine rather than what anyone is paying for, and it sells a
+middle layer between a program and its caller, which is a position that gets absorbed.
+Comprehension is a step this project performs. It is not what the project is.
+
+Who this is aimed at, and it is worth knowing while you build: a person at a chat
+window, one click, on a surface they already use. Not an operator running
+infrastructure. If your demo needs a terminal and a config file to make sense, you have
+built the thing for the wrong person.
 
 ## Who this is for
 
