@@ -28,6 +28,17 @@ than copied from a page:
 comprehends and lists, so to use a surface you reconnect to the URL it gives you.
 Read it live rather than writing the mounts into a file; the list moves.
 
+**Always use the `/gecko/mcp` form, never the bare host.** Measured 2026-09-25: a POST
+to `https://mcp.geckovision.tech/mcp` answers `307` redirecting to `/gecko/mcp`, and
+some MCP clients will not follow a redirect on a POST. The connector then fails for a
+reason that has nothing to do with your config.
+
+**And expect to add two connectors, not one.** The endpoint above serves two tools and
+neither of them buys anything. `list_stores` and `prepare_purchase` live on the
+orquestra mount. Somebody who adds only the first one sees a tool telling them to
+reconnect somewhere else, usually decides the thing is broken, and stops. If your
+instructions hand a reader one URL, they will add one connector.
+
 ## Step 2: wire it
 
 Claude Code:
