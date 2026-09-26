@@ -1,12 +1,23 @@
-# Project 00 — Your store, and a buyer that refuses well
+# Project 00: your store, and a buyer that refuses well
 
-**Given Friday 25 September, in session 10. Due Monday 28.** Out of 500, and 100 is a
-pass. It adds to your session 10 score, so it moves you up the leaderboard.
+**This is weekly challenge 2, and it lives in the course folder, not here.** You do it,
+check it and submit it from the course folder. Nothing in this repository runs its check
+or sends its score.
+
+| What | Where |
+|---|---|
+| do it | the session 10 notebook, or `demos/10_your_store_and_buyer.ipynb`, in the course folder |
+| submit it | in the course folder: `uv run bootcamp submit ch10 --github <you> --push` |
+| `store.json` | travels with that submission |
+
+Given Friday 25 September in session 10, due Monday 28. Out of 500, and 100 is a pass.
+It adds to your session 10 score.
 
 Offline. No key, no wallet, no network, no money.
 
-This is the first thing your capstone is built from. Everything in week 3 assumes you
-have it.
+This page stays here because your final project is built on the same store and buyer.
+Everything in week 3 assumes you have them. Your capstone (the certificate) is a
+different repository and does not use this page.
 
 ## What you are building, and why it is two things
 
@@ -50,11 +61,11 @@ item is 1500000 and your budget is 1200000" is.
 
 Make it refuse, at minimum:
 
-- **not enough budget** — and say by how much, in the smallest unit, with both numbers
-- **the wrong mint** — the item is priced in something the buyer does not hold. Compare
+- **not enough budget:** say by how much, in the smallest unit, with both numbers
+- **the wrong mint:** the item is priced in something the buyer does not hold. Compare
   the mint **address**, never the symbol
-- **not on the menu** — the thing asked for is not sold here
-- **a nonsense quantity** — zero, negative, or a number nobody could mean
+- **not on the menu:** the thing asked for is not sold here
+- **a nonsense quantity:** zero, negative, or a number nobody could mean
 
 ## What makes it good rather than done
 
@@ -72,18 +83,17 @@ The rubric rewards the same thing all term has: a claim somebody else can check.
 
 ## How to check it
 
-```bash
-uv run bootcamp check ch10
-```
-
-The weekly challenge prints its own score out of 500. Run it as often as you like;
-there is no attempt limit and nothing is deducted for trying.
+In the **course folder**. This repository has no `bootcamp` command, so the check does
+not run here. The course notebook prints the score out of 500. Run it as often as you
+like; there is no attempt limit and nothing is deducted for trying.
 
 ## Where the work lives
 
-Here, in this repository, which is yours. Put the store and the buyer wherever makes
-sense to you — there is no layout you have to follow. What matters on Monday is that
-somebody else can clone it, run one command, and watch it refuse something.
+The scored copy lives in the course folder and goes out with your submission. If you
+want the store and the buyer in your final project too, copy them into this repository
+wherever makes sense to you. There is no layout you have to follow. What matters at the
+showcase is that somebody else can clone it, run one command, and watch it refuse
+something.
 
 ## Done looks like
 
@@ -100,7 +110,9 @@ less than one with a failure you can explain.
 ## Where this goes next
 
 Monday your store goes onto the shared course fork, next to everybody else's. Week 3's
-daily projects build on top of it: the buyer learns to pin what it was asked for, check
-a prepared transaction field by field against that record, and write a receipt.
+daily projects build on top of it. [Project 01](../01-read-the-menu/README.md) reads a
+real menu over MCP, prepares one unsigned purchase, and triggers a refusal on purpose.
+After that the buyer learns to pin what it was asked for, check a prepared transaction
+field by field against that record, and write a receipt.
 
 You are building the piece that sits between an agent and the thing that signs.

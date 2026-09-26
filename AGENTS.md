@@ -4,15 +4,26 @@ This file tells a coding assistant what this repository is and how to help with 
 
 ## Purpose
 
-A student's own capstone project for the Dev3Pack AI-Engineering bootcamp. It starts as
-a clone of a course-provided repository and becomes the student's own: they push it to
-their own GitHub account and add one project per day of week 3.
+A student's own **final project** for the Dev3Pack AI-Engineering bootcamp: a store, the
+Gecko MCP, and a buyer. It starts as a clone of a course-provided repository and becomes
+the student's own: they push it to their own GitHub account (suggested name
+`my-final-project`) and add one project per day of week 3. It is their portfolio piece,
+shown at the optional showcase on Saturday 3 October.
 
-Only project 00 is scored: it is the weekly challenge, worth up to 500 toward session
-10, due Monday 28 September. The week-3 daily projects are not marked.
+Nothing in this repository is scored. This repository has no `bootcamp` command.
 
-The graded CAPSTONE is a different repository and a different thing again. Do not
-conflate the three.
+- **Weekly challenge 2** (the store and the buyer) is done, checked and submitted from the
+  course folder: the session 10 notebook or `demos/10_your_store_and_buyer.ipynb`, then
+  `uv run bootcamp submit ch10 --github <handle> --push`. `store.json` travels with that
+  submission. Project 00 here describes it; it is not checked here.
+- **The capstone** is the certificate: a research assistant, in a different repository
+  made by `bootcamp capstone new`, graded privately and defended in session 15.
+
+Do not conflate the three. If a student asks for a score, the answer is the course
+folder, not this repository.
+
+Gecko, in the founder's words: how an agent moves money on Solana and proves it landed as
+asked. Never describe it as an "API comprehension layer"; that line is retired.
 
 ## How to help
 
@@ -35,5 +46,8 @@ Each project folder has its own README with its own commands. There is no reposi
 build.
 
 ```bash
-git pull upstream main    # the next day's project
+git pull upstream main                                      # the next day's project
+python3 projects/01-read-the-menu/check.py                  # project 01's local self-check
 ```
+
+`check.py` prints a local score only. It reaches no leaderboard and no grader.

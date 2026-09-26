@@ -1,10 +1,14 @@
-# Capstone: an agent that buys a call it has never made
+# Final project: an agent that buys a call it has never made
 
-Week 3, 28 September to 2 October 2026. Showcase Saturday 3 October.
+Week 3, 28 September to 2 October 2026. Showcase Saturday 3 October, optional.
 
-This is the product note for the thing you build on top of project 00. Read it once,
-then go and build. It is also a reference project: anybody can clone this repository and
-run the same path.
+This is the product note for your final project: the store, the Gecko MCP, and a buyer,
+built on top of project 00. Your capstone (the certificate) is a different thing: a
+research assistant in its own repository, made by `bootcamp capstone new`, graded
+privately and defended in session 15.
+
+Read this once, then go and build. It is also a reference project: anybody can clone
+this repository and run the same path.
 
 ## The problem, on a Tuesday morning
 
@@ -98,16 +102,26 @@ Later, if the week goes well:
 
 ## The journey
 
-Every step names a command. Steps 1 to 7 need no key, no account, and no money.
+Every step names a command. Every step is keyless except the one marked optional in
+step 8: no key, no account, no money.
 
 1. Get the repository and make it yours.
-   `git clone https://github.com/Gecko-Academy/Dev3Pack-Gecko-Capstone-Project.git my-capstone`
+   `git clone https://github.com/Gecko-Academy/Dev3Pack-Gecko-Capstone-Project.git my-final-project`
    then the two `gh` commands in the root README.
 2. Check the environment. `npx @geckovision/gecko doctor` prints the version and the
    exact next step. No install, no key.
-3. Let the agent see what already exists. Connect the keyless surface:
-   `claude mcp add --transport http gecko https://mcp.geckovision.tech/gecko/mcp`, then
-   have the agent call `list_surfaces`. This is the list it chooses from.
+3. Let the agent see what already exists. Connect **both** keyless connectors, because
+   they do different jobs:
+
+   ```bash
+   claude mcp add --transport http gecko https://mcp.geckovision.tech/gecko/mcp
+   claude mcp add --transport http orquestra https://mcp.geckovision.tech/orquestra/mcp
+   ```
+
+   The `gecko` one only lists and comprehends: 2 tools, `list_surfaces` and
+   `comprehend_api`. The store tools (`list_stores`, `prepare_purchase`) live on
+   `orquestra`. Connect only the first and your agent can see the list but cannot buy
+   anything. Have the agent call `list_surfaces`. This is the list it chooses from.
 4. Give it a goal with no API in it. The agent picks one entry and writes down, in one
    line, which field made it pick. Save that line. It is the pinned intent and
    everything later is checked against it.
@@ -124,11 +138,13 @@ Every step names a command. Steps 1 to 7 need no key, no account, and no money.
    schema. Keep the output. It is the plan you will compare the live run against.
 8. Hand the surface to the agent.
    `npx @geckovision/gecko serve <spec> --stdio`, wired into your client the same way as
-   step 3. The agent now asks questions instead of guessing paths. Going live is its own
-   deliberate step: `gecko auth set <provider>` puts the key in your OS keychain, never
-   in `mcp.json`.
-9. For the on-chain leg, connect `https://mcp.geckovision.tech/orquestra/mcp` (keyless,
-   16 tools). Browse with `list_stores`. Do all the deciding here, where nothing expires.
+   step 3. The agent now asks questions instead of guessing paths.
+   **Optional, and the only step that needs a key:** going live against a paid API.
+   `gecko auth set <provider>` puts the key in your OS keychain, never in `mcp.json`.
+   Skip it and everything else in this journey still works.
+9. For the on-chain leg, use the `orquestra` connector from step 3 (keyless, 16 tools).
+   Browse with `list_stores`. Do all the deciding here, where nothing expires.
+   [Project 01](projects/01-read-the-menu/README.md) walks this step and step 11 by hand.
 10. Prove the call before it counts. `npx @geckovision/gecko prove "<your intent>"`
     routes the intent, shows where every account came from, and simulates it unsigned on
     a fork. Exit 0 means it lands. Exit 1 means it routed and does not pass.
@@ -147,8 +163,8 @@ Every step names a command. Steps 1 to 7 need no key, no account, and no money.
 | Time from `git clone` to a first successful call with no key | under 10 minutes | you time it and write the figure in your README next to the command |
 | Keys committed to the repository | 0 | `git grep -nE "BEGIN [A-Z ]*PRIVATE KEY\|sk-[A-Za-z0-9]{20}"` returns nothing, and `mcp.json` contains no secret |
 | Auth headers visible in the agent-facing tool definitions | 0 | the findings section of `npx @geckovision/gecko report <spec>` |
-| Distinct refusals your buyer can produce on demand, each naming both numbers | at least 4 | `uv run bootcamp check ch10`, plus you triggering each one live |
-| Difference between the recorded plan and the live plan | 0 fields | run `gecko test <spec> --mode recorded` then `--mode live`; the chosen operation, path and argument names must match |
+| Distinct refusals your buyer can produce on demand, each naming both numbers | at least 4 | the weekly challenge 2 check in the course folder, plus you triggering each one live |
+| Difference between the recorded plan and the live plan (optional: needs a key) | 0 fields | run `gecko test <spec> --mode recorded` then `--mode live`; the chosen operation, path and argument names must match. Skip this row if you skipped the live step |
 | Goals where the agent picks a surface that can answer | at least 4 of 5 | write 5 goals before you run any of them, then run them once each and record the picks |
 | Transactions signed before a simulation passed | 0 | every signature in your log has a `gecko prove` exit 0 or a `try_purchase` result ahead of it, by timestamp |
 

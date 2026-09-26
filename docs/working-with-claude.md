@@ -59,7 +59,8 @@ tell whether the test ever failed.
 ### 2. Find the bug instead of guessing at it
 
 ```
-`uv run bootcamp check ch10` says my store name check fails. Here is the full output:
+The weekly challenge check in my course folder says my store name check fails. Here is
+the full output:
 
 <paste>
 
@@ -193,7 +194,7 @@ statements from one source, and it is exactly as strong as one.
 Three moves, and they take under a minute each.
 
 Ask for the command and the output, not the conclusion. "It works" is not a result.
-`uv run bootcamp check ch10` followed by the printed score is. If the agent tells you a
+`python3 projects/01-read-the-menu/check.py` followed by the lines it printed is. If the agent tells you a
 test passes and cannot show you the run, the test did not run.
 
 Run it yourself once before you believe it. Not every time, but once per claim that
