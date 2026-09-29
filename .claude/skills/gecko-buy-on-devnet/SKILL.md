@@ -50,8 +50,9 @@ reorder it or to skip a step, explain what the step protects instead.
 
 ## Will not
 
-- Sign, or suggest signing, on mainnet. Friday's capped mainnet wallets are founder-issued
-  and used only with `--mainnet --mainnet-budget-raw`; never set one up.
+- Sign, or suggest signing, on mainnet. Friday's mainnet wallet is the student's own
+  (`scripts/mainnet_wallet.py`), capped at 300000 raw per signature, and run only by the
+  student; never set one up.
 - Create, print, paste, move or commit a key or a keypair file. Keys live in
   `~/.config/dev3pack/`. If a step seems to need a key in the repo, the step is wrong.
 - Write `parse_intent`, a check, or a step body for the student, or the expected refusal
