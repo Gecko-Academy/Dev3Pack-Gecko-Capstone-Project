@@ -154,9 +154,74 @@ for two espressos), **budget** (half the price), **tampered bytes** (one byte ch
 before verify) or **stale bytes** (waits past `expires`). Your buyer refuses and signs
 nothing. Rehearse all four offline with `uv run buyer --cards --recorded`.
 
-**Friday on mainnet, for demo-day participants only.** The founder generates and funds a
-wallet per participant, capped at three espressos, and hands it over on the day. You buy
-an espresso from `geckocoffee` with it, live. It never enters your repository.
+**Friday on mainnet, for demo-day participants only.** You buy an espresso from
+`geckocoffee` on mainnet, live, with a wallet you make on your own machine. Do these
+before Friday; steps 1 to 5 take ten minutes plus the wait for funding.
+
+1. **Make the wallet, on your own machine.**
+
+   ```bash
+   uv run python scripts/mainnet_wallet.py create
+   ```
+
+   It writes `~/.config/dev3pack/mainnet-wallet.json` (mode 600, outside this repository)
+   and prints the public address only. It refuses to overwrite a wallet that exists.
+
+2. **Get a Gecko key**, with the Gecko CLI (published on PyPI as `gecko-surf`; `uvx` runs it
+   without installing anything):
+
+   ```bash
+   uvx --from gecko-surf gecko login --email <you@example.com>
+   ```
+
+   It emails you a one-time code and seals the key in your OS keychain. Where there is no
+   keychain (WSL2, a headless Linux box), it shows the key once instead: copy it then.
+
+3. **Tell the instructor the email you logged in with.** Your Gecko account is that email,
+   and the instructor grants it to the class. Until then, `register` answers `not-granted`.
+
+4. **Register the wallet's address.** Put the key in `GECKO_API_KEY` without it ever
+   appearing on screen, or leave it unset and paste it at the prompt (not echoed):
+
+   ```bash
+   export GECKO_API_KEY="$(uvx keyring get gecko:gecko-identity gecko)"
+   uv run python scripts/mainnet_wallet.py register
+   ```
+
+   It fetches a one-time challenge, signs it with the wallet, and sends the address and the
+   signature. The key file never leaves your machine; the Gecko key is never printed. It
+   prints `registered <address> for <account>`, or Gecko's reason, word for word.
+   Each run uses a fresh one-time challenge; if it fails, fix the reason and run it once
+   more (on `rate-limited`, wait a minute first; never loop it). Registering a different
+   address **replaces** the old one, which may already be funded: it warns you, stops
+   until you pass `--replace`, and either way you tell the instructor.
+
+5. **Wait for funding, then check it.**
+
+   ```bash
+   uv run python scripts/mainnet_wallet.py show
+   ```
+
+   The founder funds each registered address with 300000 raw USDC (three espressos at
+   100000) and about 0.0094 SOL for fees. `show` reads both from a public mainnet RPC and
+   signs nothing.
+
+6. **Friday: the buy.**
+
+   ```bash
+   uv run buyer "one espresso" --mainnet --store geckocoffee
+   ```
+
+   The mainnet lane reads only that wallet, pays in mainnet USDC, and caps every signature
+   at `--mainnet-budget-raw 300000` by default. The signer refuses a cap above 300000, any
+   purchase above the cap, and any node whose genesis hash is not mainnet's.
+
+**Mainnet is real money.** The budget is the cap, and the balance is the hard one: a
+fourth espresso cannot be paid for. Never share the key file, never commit it, never
+paste it anywhere (the pre-commit scan refuses `mainnet-*.json`, but that is a seatbelt).
+The wallet signs two things only: the registration challenge, and Friday's purchases.
+No PayBox, no hosted signer: the key is yours and stays on your machine. Telegram is an
+optional extra channel, once a transaction has worked from the terminal.
 
 ## Safety
 
@@ -164,7 +229,7 @@ an espresso from `geckocoffee` with it, live. It never enters your repository.
 |---|---|
 | Recorded | real devnet answers, replayed offline. No key, no network, no money. Build here. |
 | Devnet | your own store and purchases, all week, with devnet SOL and your own token. |
-| Mainnet | only Friday, only the founder's capped wallet, only for demo-day participants. |
+| Mainnet | only Friday, only your own registered wallet holding three espressos, only for demo-day participants. |
 
 - **No key in the repository, ever.** `.githooks/pre-commit` and CI run
   `scripts/scan_secrets.py`, which refuses keypair-shaped files. That is a seatbelt, not a
@@ -173,8 +238,10 @@ an espresso from `geckocoffee` with it, live. It never enters your repository.
   only after the RPC's genesis hash proves the cluster is devnet
   (`EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG`). The signer refuses a key file inside
   any git repository.
-- **Mainnet is only Friday's capped wallet from the founder.** The signer refuses mainnet
-  without an explicit `--mainnet-budget-raw`, and refuses any purchase above it.
+- **Mainnet is only Friday, with your own wallet** from `scripts/mainnet_wallet.py`, in
+  `~/.config/dev3pack/mainnet-wallet.json`, funded by the founder with three espressos. The
+  signer caps every mainnet signature at 300000 raw, refuses any cap or purchase above it,
+  and refuses a key file inside any git repository.
 - **What this does not prove:** that your pin was right (the buyer faithfully signs a
   wrong request), anything beyond one unit per purchase, or anything about mainnet
   beyond Friday's three espressos.
@@ -197,7 +264,7 @@ makes a reader trust the repository more, not less.
 | `store/store.json` | your store; `store/dev3pack-cafe.json` is the class store |
 | `scripts/devnet_setup.py`, `scripts/create_store.py` | your keys, funds, token and store on devnet |
 | `scripts/class_funder.py` | instructor: tops student devnet addresses up, dry run by default |
-| `scripts/friday_wallets.py` | founder only: makes Friday's capped mainnet wallets; never sends, never signs |
+| `scripts/mainnet_wallet.py` | Friday: your own mainnet wallet (`create`, `register`, `show`); the key never leaves your machine |
 | `scripts/scan_secrets.py`, `.githooks/` | the key scan, as a pre-commit hook and in CI |
 | `fixtures/` | recorded devnet answers: `cases/`, `cards/`, and Gecko's `refusals/` |
 | `intents/`, `receipts/`, `refusals/` | your evidence, from devnet runs (recorded runs go to `.recorded/`) |
@@ -216,6 +283,7 @@ makes a reader trust the repository more, not less.
 | `uv run buyer --cards --recorded` | the four Friday cards, offline |
 | `uv run buyer "one espresso" --devnet` | one live purchase from your store |
 | `uv run buyer "one espresso" --devnet --store dev3pack-cafe --mint Eoqdd43nFQ9HzGq8HjBRVLCV6aTqCFRiwHy1ZVQheYSi` | the same, from the class store |
+| `uv run python scripts/mainnet_wallet.py show` | Friday: your wallet's address and mainnet balances, read-only |
 | `uv run pytest` | the offline tests |
 | `make smoke` / `make smoke-recorded` | Thursday: live smoke, and the rollback |
 | `python3 scripts/scan_secrets.py` | the key scan |

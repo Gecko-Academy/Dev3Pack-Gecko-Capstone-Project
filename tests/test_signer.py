@@ -15,10 +15,11 @@ from solders.message import Message
 from solders.system_program import TransferParams, transfer
 from solders.transaction import Transaction
 
+from buyer import cli
 from buyer.chain import DEVNET_GENESIS, MAINNET_GENESIS
 from buyer.check import Refused
 from buyer.prepared import Prepared
-from buyer.signer import KeyLocationError, KeypairSigner
+from buyer.signer import MAINNET_CAP_RAW, KeyLocationError, KeypairSigner, mainnet_wallet_path
 
 
 class FakeChain:
@@ -150,3 +151,43 @@ def test_the_key_never_shows_in_repr_or_errors(tmp_path: Path) -> None:
     assert secret not in repr(signer)
     assert secret not in str(caught.value)
     assert str(key) not in repr(signer) + str(caught.value)
+
+
+def test_mainnet_refuses_a_cap_above_fridays_ceiling(tmp_path: Path) -> None:
+    path, _ = keyfile(tmp_path)
+    chain = FakeChain(genesis=MAINNET_GENESIS)
+    with pytest.raises(KeyLocationError, match="above Friday's cap"):
+        KeypairSigner(path, "mainnet", chain, budget_raw=MAINNET_CAP_RAW + 1)
+    KeypairSigner(path, "mainnet", chain, budget_raw=MAINNET_CAP_RAW)  # at the ceiling: allowed
+
+
+def test_the_mainnet_lane_reads_the_registered_wallet_and_defaults_to_the_cap(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """`--mainnet` with no key flag and no budget flag: the wallet `mainnet_wallet.py create`
+    made, capped at 300000. Built offline; nothing is prepared, signed or sent."""
+    monkeypatch.setenv("HOME", str(tmp_path))
+    monkeypatch.delenv("DEV3PACK_HOME", raising=False)
+    key = Keypair()
+    wallet = mainnet_wallet_path()
+    wallet.parent.mkdir(parents=True)
+    wallet.write_text(json.dumps(list(bytes(key))))
+    args = cli.build_parser().parse_args(
+        ["one espresso", "--mainnet", "--store", "geckocoffee", "--out", str(tmp_path)]
+    )
+    run = cli.live_run(args, args.ask, {})
+    assert run.signer.address == str(key.pubkey())
+    assert run.signer.budget_raw == MAINNET_CAP_RAW == 300_000  # type: ignore[attr-defined]
+    assert run.context.pay_mint == cli.MAINNET_USDC
+
+
+def test_the_mainnet_lane_without_a_wallet_says_create_it(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setenv("HOME", str(tmp_path))
+    monkeypatch.delenv("DEV3PACK_HOME", raising=False)
+    args = cli.build_parser().parse_args(
+        ["one espresso", "--mainnet", "--store", "geckocoffee", "--out", str(tmp_path)]
+    )
+    with pytest.raises(SystemExit, match="mainnet_wallet.py create"):
+        cli.live_run(args, args.ask, {})

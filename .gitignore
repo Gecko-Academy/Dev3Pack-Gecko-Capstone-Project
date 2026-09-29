@@ -12,6 +12,7 @@ venv/
 *keypair*.json
 id.json
 devnet-*.json
+mainnet-*.json
 friday-*.json
 
 # Recorded runs are practice, never evidence: they go here, not into intents/ receipts/ refusals/

@@ -18,7 +18,7 @@ moved) or a **refusal** (it did not sign, and this is the field that disagreed).
 | 4:30 | tests and the five-case table; one test that was red first | `uv run pytest`, `docs/EVAL_REPORT.md` | |
 | 5:15 | the ADR: the decision, and what would reverse it | `docs/adr/0001-refusals-before-signing.md` | |
 
-Friday participants with a capped mainnet wallet from the founder may do minute 1:30 on
+Friday participants with a registered, funded mainnet wallet may do minute 1:30 on
 mainnet against geckocoffee instead (see "Friday on mainnet" below). Everyone else stays
 on devnet, and that is the whole defence.
 
@@ -48,21 +48,80 @@ uv run buyer --cards --recorded      # 4/4 once your steps and checks are writte
 - [ ] `uv run pytest` is green and `python3 scripts/scan_secrets.py` finds nothing.
 - [ ] Your devnet buyer holds SOL and your token (`solana balance -u devnet <buyer>`).
 - [ ] Your assistant's connector is live; you tried `list_stores` today, not yesterday.
+- [ ] Mainnet only: `uv run python scripts/mainnet_wallet.py show` prints 300000 raw USDC
+      and some SOL, and `mainnet-wallet.json` is not in `git status`.
 
-## Friday on mainnet (only with a founder-issued wallet)
+## Friday on mainnet (your own wallet, registered and funded)
 
-If you are given a capped wallet: it is a keypair file handed to you on Friday, holding
-three espressos' worth of USDC and a little SOL, and nothing else. It never enters your
-repository, and you give it back after.
+The key is made on your machine and never leaves it. Do steps 1 to 5 before Friday.
 
-```bash
-GECKO_MAINNET_KEYPAIR=<the file you were handed> \
-  uv run buyer "one espresso" --mainnet --store geckocoffee --mainnet-budget-raw 100000
-```
+1. **Make the wallet, on your own machine.**
 
-The signer refuses to sign on mainnet without `--mainnet-budget-raw`, refuses any
-purchase above it, and checks mainnet's genesis hash before the signature. The wallet's
-balance is the hard cap: a fourth espresso cannot be paid for.
+   ```bash
+   uv run python scripts/mainnet_wallet.py create
+   ```
+
+   It writes `~/.config/dev3pack/mainnet-wallet.json` (mode 600, outside this repository)
+   and prints the public address only. It refuses to overwrite a wallet that exists.
+
+2. **Get a Gecko key**, with the Gecko CLI (published on PyPI as `gecko-surf`; `uvx` runs it
+   without installing anything):
+
+   ```bash
+   uvx --from gecko-surf gecko login --email <you@example.com>
+   ```
+
+   It emails you a one-time code and seals the key in your OS keychain. Where there is no
+   keychain (WSL2, a headless Linux box), it shows the key once instead: copy it then.
+
+3. **Tell the instructor the email you logged in with.** Your Gecko account is that email,
+   and the instructor grants it to the class. Until then, `register` answers `not-granted`.
+
+4. **Register the wallet's address.** Put the key in `GECKO_API_KEY` without it ever
+   appearing on screen, or leave it unset and paste it at the prompt (not echoed):
+
+   ```bash
+   export GECKO_API_KEY="$(uvx keyring get gecko:gecko-identity gecko)"
+   uv run python scripts/mainnet_wallet.py register
+   ```
+
+   It fetches a one-time challenge, signs it with the wallet, and sends the address and the
+   signature. The key file never leaves your machine; the Gecko key is never printed. It
+   prints `registered <address> for <account>`, or Gecko's reason, word for word.
+   Each run uses a fresh one-time challenge; if it fails, fix the reason and run it once
+   more (on `rate-limited`, wait a minute first; never loop it). Registering a different
+   address **replaces** the old one, which may already be funded: it warns you, stops
+   until you pass `--replace`, and either way you tell the instructor.
+
+5. **Wait for funding, then check it.**
+
+   ```bash
+   uv run python scripts/mainnet_wallet.py show
+   ```
+
+   The founder funds each registered address with 300000 raw USDC (three espressos at
+   100000) and about 0.0094 SOL for fees. `show` reads both from a public mainnet RPC and
+   signs nothing.
+
+6. **Friday: the buy.**
+
+   ```bash
+   uv run buyer "one espresso" --mainnet --store geckocoffee
+   ```
+
+   The mainnet lane reads only that wallet, pays in mainnet USDC, and caps every signature
+   at `--mainnet-budget-raw 300000` by default. The signer refuses a cap above 300000, any
+   purchase above the cap, and any node whose genesis hash is not mainnet's.
+
+**Mainnet is real money.** The budget is the cap, and the balance is the hard one: a
+fourth espresso cannot be paid for. Never share the key file, never commit it, never
+paste it anywhere (the pre-commit scan refuses `mainnet-*.json`, but that is a seatbelt).
+The wallet signs two things only: the registration challenge, and Friday's purchases.
+No PayBox, no hosted signer: the key is yours and stays on your machine. Telegram is an
+optional extra channel, once a transaction has worked from the terminal.
+
+On stage, run `show` first so the room sees three espressos' worth of USDC, then the buy,
+then `show` again: the USDC went down by exactly the price.
 
 ## Questions you should be ready for
 

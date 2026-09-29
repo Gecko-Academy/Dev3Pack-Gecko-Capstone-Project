@@ -160,9 +160,10 @@ Each project has a local `check.py` that prints a score and sends it nowhere.
   repository, and refuses to sign unless the RPC's genesis hash is devnet's
   (`EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG`). A pre-commit scan and CI refuse
   keypair-shaped files.
-- **Friday's mainnet wallets.** Generated and funded by the founder, never by a student,
-  holding three espressos' worth of USDC and a little SOL; used only with
-  `--mainnet --mainnet-budget-raw`, which refuses above the cap; never in a repository.
+- **Friday's mainnet wallet.** Made on the student's machine by
+  `scripts/mainnet_wallet.py create`, registered by address with their Gecko key, funded by
+  the founder with 300000 raw USDC and about 0.0094 SOL. The `--mainnet` lane reads only
+  that file and caps every signature at 300000 raw; never in a repository.
 - **Store names are one global namespace** (the account is `PDA(['receipts', name])`):
   every student uses `dev3<handle>`, lowercase, dashes allowed, no underscores.
 - **Funding.** The public devnet faucet returned 429 on every try in the spike. The

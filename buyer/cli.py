@@ -3,7 +3,9 @@
 --recorded   offline: Gecko's answers and the ledger reads come from fixtures/. No key,
              no network, no money. `GECKO_SOURCE=recorded` does the same.
 --devnet     live: the hosted Gecko MCP, your devnet key, devnet SOL and your own token.
---mainnet    Friday only, with the founder's capped wallet. Needs --mainnet-budget-raw.
+--mainnet    Friday only, with your own mainnet wallet (scripts/mainnet_wallet.py), funded
+             by the founder with three espressos. --mainnet-budget-raw defaults to
+             300000, and the signer refuses any cap or purchase above that.
 
 --cases      run the five use cases (and the trap) from fixtures/cases/, and compare
              each outcome with what the fixture expects.
@@ -25,7 +27,7 @@ from .chain import DEVNET_RPC
 from .intent import Context
 from .ledger import LiveChain, RecordedChain, RecordingChain
 from .mcp_client import HostedGecko, RecordedGecko, RecordingGecko, load_fixture
-from .signer import CONFIG_DIR, KeypairSigner, RecordedSigner
+from .signer import CONFIG_DIR, MAINNET_CAP_RAW, KeypairSigner, RecordedSigner, mainnet_wallet_path
 
 ROOT = Path(__file__).resolve().parent.parent
 FIXTURES = ROOT / "fixtures"
@@ -91,13 +93,16 @@ class _RecordingSigner:
 def live_run(args: argparse.Namespace, ask: str, context_overrides: dict[str, Any]) -> Run:
     if args.mainnet:
         cluster, rpc = "mainnet", os.environ.get("GECKO_MAINNET_RPC", MAINNET_RPC)
-        key = os.environ.get("GECKO_MAINNET_KEYPAIR")
-        if not key:
+        # One path, never an override: the only mainnet key is the one `mainnet_wallet.py
+        # create` made on this machine and registered with Gecko.
+        key = str(mainnet_wallet_path())
+        if not Path(key).is_file():
             raise SystemExit(
-                "--mainnet needs GECKO_MAINNET_KEYPAIR: the founder's capped wallet file"
+                f"--mainnet needs your wallet at {key}: "
+                "run `uv run python scripts/mainnet_wallet.py create`, then register it"
             )
         if args.mainnet_budget_raw is None:
-            raise SystemExit("--mainnet refuses to sign without --mainnet-budget-raw")
+            args.mainnet_budget_raw = MAINNET_CAP_RAW
         pay_mint = args.mint or MAINNET_USDC
     else:
         cluster, rpc = "devnet", os.environ.get("GECKO_DEVNET_RPC", DEVNET_RPC)
@@ -230,7 +235,7 @@ def run_group(group: str, args: argparse.Namespace) -> int:
     return 0 if hits == len(rows) else 1
 
 
-def main(argv: list[str] | None = None) -> int:
+def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="buyer", description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
     )
@@ -238,19 +243,26 @@ def main(argv: list[str] | None = None) -> int:
     lane = parser.add_mutually_exclusive_group()
     lane.add_argument("--recorded", action="store_true", help="offline, from fixtures/")
     lane.add_argument("--devnet", action="store_true", help="live on devnet with your key")
-    lane.add_argument("--mainnet", action="store_true", help="Friday only, capped wallet")
+    lane.add_argument("--mainnet", action="store_true", help="Friday only, your capped wallet")
     parser.add_argument("--cases", action="store_true", help="run fixtures/cases/")
     parser.add_argument("--cards", action="store_true", help="run fixtures/cards/")
     parser.add_argument("--store", help="store name (default: store/store.json)")
     parser.add_argument("--mint", help="the mint you pay with, as an address")
     parser.add_argument("--budget-raw", type=int, help=f"default {DEFAULT_BUDGET_RAW}")
     parser.add_argument(
-        "--mainnet-budget-raw", type=int, help="Friday: the most one signature may spend"
+        "--mainnet-budget-raw",
+        type=int,
+        help=f"Friday: the most one signature may spend (default and ceiling {MAINNET_CAP_RAW})",
     )
     parser.add_argument("--card", choices=["tampered", "stale"], help="inject a Friday card")
     parser.add_argument("--record", help="save this live run as a fixture at this path")
     parser.add_argument("--out", help="where intents/, receipts/, refusals/ go")
     parser.add_argument("--json", help="write the case table as JSON here")
+    return parser
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = build_parser()
     args = parser.parse_args(argv)
 
     if not (args.devnet or args.mainnet):

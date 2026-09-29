@@ -7,7 +7,7 @@ It looks for what a Solana key actually looks like on disk, not for the word "ke
 
 * a JSON array of exactly 64 small integers (the Solana CLI keypair format);
 * a file whose name says it is a keypair (`*keypair*.json`, `id.json`, `devnet-*.json`,
-  `friday-*.json`, `*.pem`, `*.key`);
+  `mainnet-*.json`, `friday-*.json`, `*.pem`, `*.key`);
 * a PEM private key block;
 * an assignment of a secret-looking name (`PRIVATE_KEY=`, `SECRET_KEY=`, `SEED_PHRASE=`,
   `MNEMONIC=`) to a long value.
@@ -30,7 +30,15 @@ PEM = re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----")
 ASSIGNED = re.compile(
     r"(?i)\b(private_key|secret_key|seed_phrase|mnemonic)\b\s*[:=]\s*[\"']?[^\s\"']{16,}"
 )
-NAMES = ["*keypair*.json", "id.json", "devnet-*.json", "friday-*.json", "*.pem", "*.key"]
+NAMES = [
+    "*keypair*.json",
+    "id.json",
+    "devnet-*.json",
+    "mainnet-*.json",  # mainnet-wallet.json: Friday's real-money key
+    "friday-*.json",
+    "*.pem",
+    "*.key",
+]
 
 
 def findings_in(name: str, text: str) -> list[str]:
