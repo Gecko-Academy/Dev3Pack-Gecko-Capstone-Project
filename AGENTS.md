@@ -77,6 +77,9 @@ A refusal is an answer. Read `code` and `reason` (Gecko's) or the field and both
   3. the student tells the instructor that email (it is their Gecko account);
   4. `uv run python scripts/mainnet_wallet.py register` reads the Gecko key from
      `GECKO_API_KEY` or a hidden prompt, signs a one-time challenge, and sends the address;
+     a failed attempt spends its challenge, so each run fetches a fresh one; never loop it
+     (the registry rate-limits per IP), and a second address needs `--replace` because it
+     replaces one the founder may already have funded;
   5. after funding, `uv run python scripts/mainnet_wallet.py show` (read-only);
   6. Friday: `uv run buyer "one espresso" --mainnet --store geckocoffee`, capped at
      `--mainnet-budget-raw 300000` by default; the signer refuses anything above it.

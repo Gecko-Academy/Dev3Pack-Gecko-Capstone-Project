@@ -191,6 +191,10 @@ before Friday; steps 1 to 5 take ten minutes plus the wait for funding.
    It fetches a one-time challenge, signs it with the wallet, and sends the address and the
    signature. The key file never leaves your machine; the Gecko key is never printed. It
    prints `registered <address> for <account>`, or Gecko's reason, word for word.
+   Each run uses a fresh one-time challenge; if it fails, fix the reason and run it once
+   more (on `rate-limited`, wait a minute first; never loop it). Registering a different
+   address **replaces** the old one, which may already be funded: it warns you, stops
+   until you pass `--replace`, and either way you tell the instructor.
 
 5. **Wait for funding, then check it.**
 

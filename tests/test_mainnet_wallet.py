@@ -44,9 +44,14 @@ def key_file(home: Path) -> Path:
 class FakeRegistry:
     """The registry's contract, as the server lane specified it. Records what it was sent."""
 
-    def __init__(self, post: tuple[int, Any] | None = None, get: tuple[int, Any] | None = None):
-        self.get = get or (200, {"challenge": CHALLENGE, "expires_at": "2026-10-02T12:00:00Z"})
-        self.post = post
+    def __init__(
+        self,
+        post: tuple[int, Any] | None = None,
+        get: tuple[int, Any] | None = None,
+        replaced: bool = False,
+    ):
+        self.get, self.post, self.replaced = get, post, replaced
+        self.issued: list[str] = []
         self.calls: list[tuple[str, str, dict[str, str], Any]] = []
 
     def __call__(
@@ -54,7 +59,11 @@ class FakeRegistry:
     ) -> tuple[int, Any]:
         self.calls.append((method, url, headers, body))
         if method == "GET":
-            return self.get
+            if self.get:
+                return self.get
+            # Single-use, like the server's: every GET issues a different challenge.
+            self.issued.append(f"{CHALLENGE} #{len(self.issued) + 1}")
+            return 200, {"challenge": self.issued[-1], "expires_at": "2026-10-02T12:00:00Z"}
         assert body is not None
         return self.post or (
             200,
@@ -63,7 +72,7 @@ class FakeRegistry:
                 "cohort": body["cohort"],
                 "address": body["address"],
                 "registered": True,
-                "replaced": None,
+                "replaced": self.replaced,
             },
         )
 
@@ -109,9 +118,9 @@ def test_register_signs_the_challenge_with_the_wallet_key(
     body = post[3]
     assert body["cohort"] == "2026-09"
     assert body["address"] == str(key.pubkey())
-    assert body["challenge"] == CHALLENGE
+    assert body["challenge"] == registry.issued[0]
     signature = Signature.from_string(body["signature"])
-    assert signature.verify(Pubkey.from_string(body["address"]), CHALLENGE.encode("utf-8"))
+    assert signature.verify(Pubkey.from_string(body["address"]), body["challenge"].encode())
     assert f"registered {key.pubkey()} for student@example.com" in capsys.readouterr().out
 
 
@@ -133,6 +142,7 @@ def test_the_keys_never_reach_the_output_or_the_request_body(
     ("status", "code", "error"),
     [
         (401, "key-invalid", "That Gecko key is not valid. Run `gecko login` again."),
+        (429, "rate-limited", "Too many requests from this address."),
         (403, "not-granted", "Your account is not in the 2026-09 class yet."),
         (400, "challenge-invalid", "The challenge expired or was already used."),
         (400, "address-invalid", "That is not a Solana address."),
@@ -223,3 +233,91 @@ def test_no_gecko_key_stops_before_any_request(
     assert wallet.main(["register"], transport=registry) == 1
     assert "no Gecko key" in capsys.readouterr().out
     assert registry.calls == []
+
+
+def test_a_bad_cohort_on_the_challenge_prints_the_servers_message(
+    home: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    created(home, capsys)
+    body = {"error": "cohort must be one of: 2026-09", "code": "cohort-invalid"}
+    registry = FakeRegistry(get=(400, body))
+    assert wallet.main(["register"], transport=registry) == 1
+    out = capsys.readouterr().out
+    assert "cohort must be one of: 2026-09" in out and "cohort-invalid" in out
+    assert registry.calls[0][1].endswith("?cohort=2026-09")
+    assert [c[0] for c in registry.calls] == ["GET"]
+
+
+@pytest.mark.parametrize("method", ["GET", "POST"])
+def test_rate_limited_says_wait_a_minute_and_does_not_loop(
+    home: Path, capsys: pytest.CaptureFixture[str], method: str
+) -> None:
+    created(home, capsys)
+    limited = (429, {"error": "Too many requests from this address.", "code": "rate-limited"})
+    registry = FakeRegistry(**({"get": limited} if method == "GET" else {"post": limited}))
+    assert wallet.main(["register"], transport=registry) == 1
+    out = capsys.readouterr().out
+    assert "Too many requests from this address." in out
+    assert "wait a minute and run register again" in out
+    assert [c[0] for c in registry.calls] == (["GET"] if method == "GET" else ["GET", "POST"])
+
+
+def test_every_run_fetches_a_fresh_challenge_even_after_a_failed_post(
+    home: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """The server consumes a challenge before it checks the signature: a failed POST burns
+    it. So a second run must never send the first run's challenge again."""
+    created(home, capsys)
+    burnt = FakeRegistry(post=(400, {"error": "bad signature", "code": "signature-invalid"}))
+    assert wallet.main(["register"], transport=burnt) == 1
+    burnt.post = None
+    assert wallet.main(["register"], transport=burnt) == 0
+    assert [c[0] for c in burnt.calls] == ["GET", "POST", "GET", "POST"]
+    first, second = burnt.calls[1][3]["challenge"], burnt.calls[3][3]["challenge"]
+    assert first != second and second == burnt.issued[1]
+
+
+def test_a_second_address_from_this_machine_warns_and_waits_for_replace(
+    home: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    old, _ = created(home, capsys)
+    assert wallet.main(["register"], transport=FakeRegistry()) == 0
+    key_file(home).unlink()  # the student made a new wallet; the old one may hold money
+    new, _ = created(home, capsys)
+
+    registry = FakeRegistry(replaced=True)
+    assert wallet.main(["register"], transport=registry) == 1
+    out = capsys.readouterr().out
+    assert (
+        f"you already registered {old.pubkey()}; registering again replaces it, "
+        f"so tell the instructor if {old.pubkey()} was already funded"
+    ) in out
+    assert registry.calls == []  # stopped before a challenge was spent
+
+    assert wallet.main(["register", "--replace"], transport=registry) == 0
+    out = capsys.readouterr().out
+    assert f"registered {new.pubkey()}" in out
+    assert registry.calls[1][3]["address"] == str(new.pubkey())
+
+
+def test_the_server_saying_replaced_prints_the_warning(
+    home: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """Registered earlier from another machine: no local record, so the server's word is
+    the only warning there can be."""
+    created(home, capsys)
+    assert wallet.main(["register"], transport=FakeRegistry(replaced=True)) == 0
+    assert (
+        "this replaced your earlier address; tell the instructor, "
+        "in case the old one was already funded"
+    ) in capsys.readouterr().out
+
+
+def test_the_registration_record_holds_no_key(
+    home: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    key, _ = created(home, capsys)
+    wallet.main(["register"], transport=FakeRegistry())
+    record = (home / ".config" / "dev3pack" / "registered-wallet.json").read_text()
+    assert json.loads(record)["address"] == str(key.pubkey())
+    assert GECKO_KEY not in record and str(key) not in record

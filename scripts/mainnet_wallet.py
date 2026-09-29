@@ -17,6 +17,12 @@ through `uv run buyer ... --mainnet`, whose signer refuses anything above 300000
 `register` reads your Gecko key from GECKO_API_KEY, or asks for it without echoing. It is
 never an argument, never written to a file and never printed.
 
+Each `register` run fetches a fresh one-time challenge and never retries on its own: a
+failed attempt spends its challenge, and the registry allows 120 requests an hour per IP.
+Registering a different address replaces the old one, which may already be funded: a
+second address from this machine is refused until you pass `--replace`, and the address
+you registered is remembered (public, no key) in ~/.config/dev3pack/registered-wallet.json.
+
 `show` is read-only: it asks a public mainnet RPC for two balances and signs nothing.
 """
 
@@ -127,25 +133,65 @@ def _refusal(status: int, body: Any, secret: str) -> str:
         text = str(body["error"])
         code = body.get("code")
         line = f"{text} ({code}, HTTP {status})" if code else f"{text} (HTTP {status})"
+    elif status == 429:
+        line = "too many requests (HTTP 429)"
     elif status == 503:
         line = "registration is not open yet (HTTP 503); ask the instructor"
     else:
         line = f"unexpected answer from Gecko (HTTP {status})"
+    if status == 429:
+        # Do not loop: each attempt costs a request against the per-IP hourly limit.
+        line += "; wait a minute and run register again"
     # A server should never echo the key back; if one ever did, it still is not printed.
     return line.replace(secret, "<redacted>") if secret else line
 
 
-def register(path: Path, gecko: str, transport: Transport, secret: str | None = None) -> int:
+def _record_path(path: Path) -> Path:
+    # Public data only (address, account): lets `register` warn BEFORE it replaces an
+    # address the founder may already have funded. The registry has no read endpoint.
+    return path.parent / "registered-wallet.json"
+
+
+def _registered_before(path: Path) -> str | None:
+    try:
+        return str(json.loads(_record_path(path).read_text())["address"])
+    except (OSError, ValueError, KeyError, TypeError):
+        return None
+
+
+def _replace_warning(old: str) -> str:
+    return (
+        f"you already registered {old}; registering again replaces it, "
+        f"so tell the instructor if {old} was already funded"
+    )
+
+
+def register(
+    path: Path,
+    gecko: str,
+    transport: Transport,
+    secret: str | None = None,
+    replace: bool = False,
+) -> int:
     key = _wallet(path)
     if key is None:
         return 1
+    address = str(key.pubkey())
+    old = _registered_before(path)
+    if old and old != address:
+        print(f"warning: {_replace_warning(old)}.")
+        if not replace:
+            # Checked before any request: no challenge is spent on a registration we stop.
+            print("Nothing was sent. If you mean it, run `register --replace`.")
+            return 1
     secret = secret if secret is not None else _gecko_key()
     if not secret.strip():
         print("refusing: no Gecko key. Set GECKO_API_KEY, or paste it at the prompt.")
         return 1
     headers = {"authorization": f"Bearer {secret.strip()}"}
-    address = str(key.pubkey())
 
+    # A challenge is single-use and the server consumes it BEFORE checking the signature, so
+    # any failed POST burns it. Every run fetches a fresh one; nothing here retries or keeps one.
     status, body = transport(
         "GET", f"{gecko}/registry/class-wallet/challenge?cohort={COHORT}", headers, None
     )
@@ -167,8 +213,16 @@ def register(path: Path, gecko: str, transport: Transport, secret: str | None = 
         print(f"not registered: {_refusal(status, body, secret)}")
         return 1
     print(f"registered {body.get('address', address)} for {body.get('account')}")
+    _record_path(path).write_text(
+        json.dumps({"address": address, "account": body.get("account"), "cohort": COHORT}) + "\n"
+    )
     if body.get("replaced"):
-        print(f"  this replaced the address you registered before: {body['replaced']}")
+        # The server says an earlier address was replaced (it may have been registered from
+        # another machine, so the local record cannot always warn first).
+        print(
+            "warning: this replaced your earlier address; tell the instructor, "
+            "in case the old one was already funded"
+        )
     print("Next: wait for the instructor to fund it, then `... mainnet_wallet.py show`.")
     return 0
 
@@ -204,6 +258,11 @@ def main(argv: list[str] | None = None, transport: Transport = http) -> int:
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
     )
     parser.add_argument("command", choices=["create", "register", "show"])
+    parser.add_argument(
+        "--replace",
+        action="store_true",
+        help="register this wallet even though another address was registered from here",
+    )
     parser.add_argument("--rpc", default=os.environ.get("GECKO_MAINNET_RPC", MAINNET_RPC))
     args = parser.parse_args(argv)
 
@@ -211,7 +270,7 @@ def main(argv: list[str] | None = None, transport: Transport = http) -> int:
     if args.command == "create":
         return create(path)
     if args.command == "register":
-        return register(path, GECKO, transport)
+        return register(path, GECKO, transport, replace=args.replace)
     return show(path, args.rpc)
 
 
