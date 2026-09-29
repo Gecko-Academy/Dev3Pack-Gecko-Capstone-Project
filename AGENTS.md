@@ -19,7 +19,7 @@ repository. Nothing here is graded by it.
 | Where | What |
 |---|---|
 | `buyer/` | the buyer. `agent.py` (the loop), `intent.py` (the pin), `check.py` (the seven checks), `signer.py`, `receipt.py`, `mcp_client.py`, `prepared.py` |
-| `scripts/` | `devnet_setup.py`, `create_store.py` (student); `class_funder.py` (instructor, devnet); `friday_wallets.py` (founder only, mainnet key generation, never sends); `scan_secrets.py` (the pre-commit hook) |
+| `scripts/` | `devnet_setup.py`, `create_store.py` (student); `class_funder.py` (instructor, devnet); `mainnet_wallet.py` (student, Friday: `create`, `register`, `show` their own mainnet wallet); `scan_secrets.py` (the pre-commit hook) |
 | `fixtures/` | real devnet answers for the five cases, the trap, the four Friday cards, and Gecko's refusals |
 | `projects/0N-*/` | one project per day, each with a README and a local `check.py` |
 | `docs/` | `connect.md`, the ADR, `ISSUES.md`, `EVAL_REPORT.md`, `DEFENCE.md` |
@@ -68,9 +68,20 @@ A refusal is an answer. Read `code` and `reason` (Gecko's) or the field and both
 - The devnet key lives in `~/.config/dev3pack/` (made by `scripts/devnet_setup.py`), its
   path in `devnet.json` or `GECKO_DEVNET_KEYPAIR`. The signer refuses a key inside a git
   repository, and signs only after the RPC's genesis hash proves the cluster is devnet.
-- Mainnet is out of scope. The one exception is Friday's presentation, with a wallet the
-  founder generated and funded, capped at three espressos, run by the student with
-  `--mainnet --mainnet-budget-raw`. Never set one up, and never sign on mainnet.
+- Mainnet is out of scope. The one exception is Friday's presentation, with the student's
+  own wallet, made and registered by the student and funded by the founder with three
+  espressos. The student runs every step themselves; you explain, you never run them:
+  1. `uv run python scripts/mainnet_wallet.py create` makes
+     `~/.config/dev3pack/mainnet-wallet.json` (mode 600) and prints the address only;
+  2. `uvx --from gecko-surf gecko login --email <their email>` gets a Gecko key;
+  3. the student tells the instructor that email (it is their Gecko account);
+  4. `uv run python scripts/mainnet_wallet.py register` reads the Gecko key from
+     `GECKO_API_KEY` or a hidden prompt, signs a one-time challenge, and sends the address;
+  5. after funding, `uv run python scripts/mainnet_wallet.py show` (read-only);
+  6. Friday: `uv run buyer "one espresso" --mainnet --store geckocoffee`, capped at
+     `--mainnet-budget-raw 300000` by default; the signer refuses anything above it.
+  Mainnet is real money. Never run `register` or a `--mainnet` buy for the student, never
+  read, print, copy or move `mainnet-wallet.json`, never ask for or echo the Gecko key.
 - `python3 scripts/scan_secrets.py` must find nothing. Install the hook once:
   `git config core.hooksPath .githooks`.
 

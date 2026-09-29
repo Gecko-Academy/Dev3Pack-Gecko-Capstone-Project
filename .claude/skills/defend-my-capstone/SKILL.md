@@ -1,6 +1,6 @@
 ---
 name: defend-my-capstone
-description: Use when the student is preparing the Friday 2 October presentation. Triggers on "Friday", "defence", "defense", "presentation", "demo", "rehearse", "six minutes", "the cards", "injected failure", "what will the judge ask". Walks the six minutes in docs/DEFENCE.md, checks that a devnet receipt is committed before going on stage, and runs the four failure cards (quantity, budget, tampered bytes, stale bytes) against the buyer, recorded first. Never fakes a landing, never commits a key, never signs on mainnet unless the student holds a founder-issued capped wallet and runs it themselves.
+description: Use when the student is preparing the Friday 2 October presentation. Triggers on "Friday", "defence", "defense", "presentation", "demo", "rehearse", "six minutes", "the cards", "injected failure", "what will the judge ask". Walks the six minutes in docs/DEFENCE.md, checks that a devnet receipt is committed before going on stage, and runs the four failure cards (quantity, budget, tampered bytes, stale bytes) against the buyer, recorded first. Never fakes a landing, never commits a key, never signs on mainnet unless the student made, registered and funded their own capped wallet (scripts/mainnet_wallet.py) and runs it themselves.
 allowed-tools: Read, Grep, Bash(uv run buyer:*), Bash(uv run pytest:*), Bash(python3 scripts/scan_secrets.py:*), Bash(git status:*), Bash(git log:*)
 ---
 
@@ -56,7 +56,7 @@ reverse the decision? A good answer names an observation, not an opinion.
 
 - Stage a card, or hard-code a refusal so a card passes. The judge picks; the code decides.
 - Present a recorded run as a live one. If the committed receipt is shown, it is said.
-- Create, handle or commit any key. Friday's mainnet wallets are handed out by the
-  founder, capped at three espressos, used only with `--mainnet --mainnet-budget-raw`,
-  and run by the student themselves; never set one up or sign with one.
+- Create, handle or commit any key. Friday's mainnet wallet is the student's own, made
+  with `scripts/mainnet_wallet.py create`, funded with three espressos, capped at 300000
+  raw per signature, and run by the student themselves; never set one up or sign with one.
 - Write the student's ADR, script or answers. Ask; do not author.

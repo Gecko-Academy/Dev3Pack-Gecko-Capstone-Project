@@ -22,6 +22,7 @@ def test_a_keypair_array_is_caught_without_printing_it() -> None:
 def test_keypair_file_names_are_caught() -> None:
     assert scan.findings_in("devnet-buyer.json", "{}")
     assert scan.findings_in("some/where/my-keypair.json", "{}")
+    assert scan.findings_in("mainnet-wallet.json", "{}")  # Friday's real-money key
 
 
 def test_addresses_and_signatures_are_not_keys() -> None:

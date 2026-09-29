@@ -6,7 +6,7 @@ Before EVERY signature, in this order, it refuses unless:
 1. the prepared purchase says it was simulated on the cluster this signer serves;
 2. the signer's own RPC answers with that cluster's genesis hash (a URL is not proof);
 3. on mainnet (Friday only): the amount leaving the wallet is at or under the explicit
-   `--mainnet-budget-raw` cap;
+   `--mainnet-budget-raw` cap, and that cap is itself at or under `MAINNET_CAP_RAW`;
 4. the chain has not passed `last_valid_block_height` (stale bytes are prepared again,
    never re-signed);
 5. these exact bytes have not been signed before by this process;
@@ -32,7 +32,25 @@ from .check import Refused, refuse
 from .ledger import Chain
 from .prepared import Prepared
 
-CONFIG_DIR = Path(os.environ.get("DEV3PACK_HOME", Path.home() / ".config" / "dev3pack"))
+
+def config_dir() -> Path:
+    """Where keys live: ~/.config/dev3pack/, or DEV3PACK_HOME. Read at call time, not import."""
+    return Path(os.environ.get("DEV3PACK_HOME", Path.home() / ".config" / "dev3pack"))
+
+
+CONFIG_DIR = config_dir()
+
+#: Friday's mainnet wallet file, made on the student's own machine by
+#: `scripts/mainnet_wallet.py create`. The one mainnet key this repository ever reads.
+MAINNET_WALLET = "mainnet-wallet.json"
+#: The most any one mainnet signature may spend: three geckocoffee espressos at 100000 raw
+#: USDC each (6 decimals, measured 28 September 2026), which is also everything the founder
+#: funds a registered wallet with. A `--mainnet-budget-raw` above it is refused outright.
+MAINNET_CAP_RAW = 300_000
+
+
+def mainnet_wallet_path() -> Path:
+    return config_dir() / MAINNET_WALLET
 
 
 class KeyLocationError(RuntimeError):
@@ -110,6 +128,10 @@ class _Guarded:
     def __init__(self, cluster: str, chain: Chain, budget_raw: int | None = None) -> None:
         if cluster == "mainnet" and budget_raw is None:
             raise KeyLocationError("mainnet signing needs an explicit --mainnet-budget-raw cap")
+        if cluster == "mainnet" and budget_raw is not None and budget_raw > MAINNET_CAP_RAW:
+            raise KeyLocationError(
+                f"--mainnet-budget-raw {budget_raw} is above Friday's cap of {MAINNET_CAP_RAW}"
+            )
         if cluster not in GENESIS:
             raise KeyLocationError(f"unknown cluster {cluster!r}")
         self.cluster = cluster
