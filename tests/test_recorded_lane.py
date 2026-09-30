@@ -67,3 +67,13 @@ def test_matches_accepts_any_listed_field() -> None:
     refused = Outcome("one latte", "refused", "check", FieldResult("product", False, "a", "b"))
     assert matches({"outcome": "refused", "field": ["price_raw", "product"]}, refused)
     assert not matches({"outcome": "refused", "field": "quantity"}, refused)
+
+
+@pytest.mark.parametrize(("card", "field"), [("tampered", "signed bytes"), ("stale", "blockhash")])
+def test_a_single_ask_with_a_card_replays_that_card(card: str, field: str) -> None:
+    # "one espresso" is also case 1, which has no answer for tampered bytes. With --card,
+    # the card's own recording is the one that was asked for.
+    from buyer.cli import _fixture_for
+
+    assert _fixture_for("one espresso", card)["expected"]["field"] == field
+    assert _fixture_for("one espresso")["expected"]["outcome"] == "landed"

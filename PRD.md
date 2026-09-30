@@ -59,9 +59,10 @@ somebody at a chat window who asks once, in plain words.
 - the docs: an ADR, an issues log, an evaluation report, the defence script.
 
 **Out:**
-- mainnet, all week. The only exception is Friday: demo-day participants may buy an
-  espresso from `geckocoffee` with a founder-generated, founder-funded wallet capped at
-  three espressos, handed out on the day;
+- mainnet, all week. The only exception is Friday: the finalists may buy an espresso
+  from `geckocoffee` with a wallet they make on their own machine
+  (`scripts/mainnet_wallet.py create`), register with their Gecko key, and the founder
+  funds with three espressos. The key never leaves their machine;
 - any key in the repository, ever;
 - Gecko signing anything: the student's signer signs, outside Gecko;
 - buying more than one unit per purchase (`prepare_purchase` prepares one; the quantity

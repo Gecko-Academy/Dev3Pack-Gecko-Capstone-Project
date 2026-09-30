@@ -18,9 +18,12 @@ moved) or a **refusal** (it did not sign, and this is the field that disagreed).
 | 4:30 | tests and the five-case table; one test that was red first | `uv run pytest`, `docs/EVAL_REPORT.md` | |
 | 5:15 | the ADR: the decision, and what would reverse it | `docs/adr/0001-refusals-before-signing.md` | |
 
-Friday participants with a registered, funded mainnet wallet may do minute 1:30 on
-mainnet against geckocoffee instead (see "Friday on mainnet" below). Everyone else stays
-on devnet, and that is the whole defence.
+The **finalists** (the students presenting on Friday, named by the instructor) may do
+minute 1:30 on mainnet against geckocoffee instead, with a registered, funded wallet (see
+"Friday on mainnet" below). Everyone else stays on devnet, and that is the whole defence.
+
+**If the network or Gecko is down on stage,** switch to the recorded answers and say so:
+`GECKO_SOURCE=recorded uv run buyer "one espresso" --devnet`. Same code path, replayed.
 
 ## The four cards
 
@@ -34,10 +37,15 @@ buyer has to refuse it on its own.
 | **Tampered bytes** | changes one byte of the signed transaction before verify | `uv run buyer "one espresso" --devnet --card tampered` | `signed bytes`: `verify_signed_transaction` refuses, so there is no submit |
 | **Stale bytes** | waits past `expires`, then asks you to sign | `uv run buyer "one espresso" --devnet --card stale` | `blockhash`: the bytes expired; prepare again, never re-sign |
 
+**Stale takes about 40 seconds live:** the runner waits on the chain until the bytes
+expire. Say what it is waiting for while it waits. Measured on devnet on 30 September:
+quantity and budget 3 s, tampered 8 s, stale 41 s.
+
 Rehearse all four offline first, with no network and no key:
 
 ```bash
-uv run buyer --cards --recorded      # 4/4 once your steps and checks are written
+uv run buyer --cards --recorded                        # 4/4 once your steps and checks are written
+uv run buyer "one espresso" --recorded --card tampered # one card at a time
 ```
 
 ## Before you go on stage
@@ -66,6 +74,9 @@ The key is made on your machine and never leaves it. Do steps 1 to 5 before Frid
 
 2. **Get a Gecko key**, with the Gecko CLI (published on PyPI as `gecko-surf`; `uvx` runs it
    without installing anything):
+
+   **Finalists: your instructor sends you a Gecko key privately, already granted.** Skip
+   to step 4 and paste it at the prompt (it is not echoed). Otherwise:
 
    ```bash
    uvx --from gecko-surf gecko login --email <you@example.com>

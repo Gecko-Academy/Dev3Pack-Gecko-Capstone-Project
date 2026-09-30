@@ -52,8 +52,13 @@ def _fixtures(group: str) -> list[Path]:
     return sorted((FIXTURES / group).glob("*.json"))
 
 
-def _fixture_for(ask: str) -> dict[str, Any]:
+def _fixture_for(ask: str, card: str | None = None) -> dict[str, Any]:
     wanted = ask.strip().lower()
+    if card:
+        # "one espresso" is also case 1, which recorded no tampered or stale answer.
+        path = FIXTURES / "cards" / f"{card}.json"
+        if path.is_file() and load_fixture(path).get("ask", "").strip().lower() == wanted:
+            return load_fixture(path)
     for group in ("cases", "cards"):
         for path in _fixtures(group):
             fixture = load_fixture(path)
@@ -281,7 +286,7 @@ def main(argv: list[str] | None = None) -> int:
         parser.error('say what you want: uv run buyer "one espresso" --recorded')
 
     if args.recorded:
-        run = recorded_run(_fixture_for(args.ask), Path(args.out), args.card)
+        run = recorded_run(_fixture_for(args.ask, args.card), Path(args.out), args.card)
     else:
         run = live_run(args, args.ask, {})
     print(f'{run.context.store}  "{run.ask}"  ({run.source})')
