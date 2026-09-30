@@ -163,7 +163,7 @@ for two espressos), **budget** (half the price), **tampered bytes** (one byte ch
 before verify) or **stale bytes** (waits past `expires`). Your buyer refuses and signs
 nothing. Rehearse all four offline with `uv run buyer --cards --recorded`.
 
-**Friday on mainnet, for demo-day participants only.** You buy an espresso from
+**Friday on mainnet, for the finalists only** (the students presenting, named by the instructor). You buy an espresso from
 `geckocoffee` on mainnet, live, with a wallet you make on your own machine. Do these
 before Friday; steps 1 to 5 take ten minutes plus the wait for funding.
 
@@ -178,6 +178,9 @@ before Friday; steps 1 to 5 take ten minutes plus the wait for funding.
 
 2. **Get a Gecko key**, with the Gecko CLI (published on PyPI as `gecko-surf`; `uvx` runs it
    without installing anything):
+
+   **Finalists: your instructor sends you a Gecko key privately, already granted.** Skip
+   to step 4 and paste it at the prompt (it is not echoed). Otherwise:
 
    ```bash
    uvx --from gecko-surf gecko login --email <you@example.com>
@@ -238,7 +241,7 @@ optional extra channel, once a transaction has worked from the terminal.
 |---|---|
 | Recorded | real devnet answers, replayed offline. No key, no network, no money. Build here. |
 | Devnet | your own store and purchases, all week, with devnet SOL and your own token. |
-| Mainnet | only Friday, only your own registered wallet holding three espressos, only for demo-day participants. |
+| Mainnet | only Friday, only your own registered wallet holding three espressos, only for the finalists. |
 
 - **No key in the repository, ever.** `.githooks/pre-commit` and CI run
   `scripts/scan_secrets.py`, which refuses keypair-shaped files. That is a seatbelt, not a
