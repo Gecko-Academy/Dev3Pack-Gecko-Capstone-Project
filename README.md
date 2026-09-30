@@ -130,6 +130,15 @@ Prove it worked: ask for `list_stores` with store `dev3pack-cafe` and network `d
 then for your own store. `AGENTS.md` tells your assistant what this repository is, and to
 explain before it writes: the checks are yours.
 
+**Start your assistant inside this folder**, so it reads the rules: Codex, Cursor and
+Copilot read `AGENTS.md` directly; Claude Code reads `CLAUDE.md`, which imports it; Gemini
+CLI needs `{"context": {"fileName": ["AGENTS.md", "GEMINI.md"]}}` in `.gemini/settings.json`.
+Then paste: *"Read AGENTS.md and tell me, in five lines, what this repository is, what you
+must not do here, and the command that checks my work."* The course page
+[Give your assistant the rules](https://gecko-academy.github.io/dev3pack-cohort-2026-09/unit3/agents-md)
+has the details, and [the capstone, step by step](https://gecko-academy.github.io/dev3pack-cohort-2026-09/unit3/capstone-tutorial)
+walks the whole week.
+
 ## What you deliver on Friday
 
 A six-minute defence (script and the four cards in [docs/DEFENCE.md](docs/DEFENCE.md)),
@@ -273,7 +282,7 @@ makes a reader trust the repository more, not less.
 | `docs/` | `connect.md`, `adr/`, `ISSUES.md`, `EVAL_REPORT.md`, `DEFENCE.md`, `working-with-claude.md` |
 | `.claude/` | skills (`gecko-buy-on-devnet`, `gecko-read-a-refusal`, `defend-my-capstone`, `gecko-connect-mcp`) and the `call-reviewer` agent |
 | `workflows/` | `survey.py`, grading several candidate APIs in parallel |
-| `PRD.md`, `AGENTS.md` | the product note, and what a coding assistant should know |
+| `PRD.md`, `AGENTS.md`, `CLAUDE.md` | the product note, what a coding assistant should know, and the Claude Code import of it |
 
 ## Commands
 
