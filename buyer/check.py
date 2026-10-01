@@ -128,13 +128,38 @@ def check_product(intent: IntentRecord, prepared: Prepared) -> FieldResult:
 
 
 def check_price(intent: IntentRecord, prepared: Prepared) -> FieldResult:
-    """TODO: the amount leaving the buyer is at or under the pinned budget.
-
-    Field name `price_raw`. Whole numbers of the smallest unit on both sides. Use case 4
-    ("tip up to 2 USDC") must refuse a 3 USDC tip and name both numbers. What should
-    happen when the simulation reports no amount at all (`prepared.price_raw is None`)?
     """
-    raise NotYetWritten("check_price", "buyer/check.py: compare prepared.price_raw with the budget")
+    PINNED:   intent.budget_raw
+    PREPARED: prepared.price_raw
+
+    Defense:
+    The prepared amount must be at or below the spending limit the user pinned.
+
+    Known amount:
+        prepared.price_raw <= intent.budget_raw → AGREE
+        prepared.price_raw > intent.budget_raw  → REFUSE
+
+    No simulated amount:
+        prepared.price_raw is None → REFUSE
+
+    Important:
+    This check enforces the budget ceiling.
+    It does not currently establish that the prepared amount equals the menu price.
+    """
+    if prepared.price_raw is None:
+        return refuse(
+            "price_raw",
+            intent.budget_raw,
+            None,
+            note="no amount was simulated",
+        )
+    if prepared.price_raw > intent.budget_raw:
+        return refuse(
+            "price_raw",
+            intent.budget_raw,
+            prepared.price_raw,
+        )
+    return agree("price_raw", prepared.price_raw)
 
 
 def check_mint(intent: IntentRecord, prepared: Prepared) -> FieldResult:
