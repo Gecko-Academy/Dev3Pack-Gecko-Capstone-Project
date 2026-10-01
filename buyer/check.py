@@ -14,6 +14,7 @@ from __future__ import annotations
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
+from solders.solders import Pubkey
 
 from . import letmebuy
 
@@ -189,22 +190,62 @@ def check_mint(intent: IntentRecord, prepared: Prepared) -> FieldResult:
 
 
 def check_quantity(intent: IntentRecord, prepared: Prepared) -> FieldResult:
-    """TODO: the number of purchases in the bytes is the number asked for.
-
-    `prepare_purchase` prepares one unit. Use case 5 ("two bags of beans") must refuse:
-    asked 2, prepared 1. Refusing is the honest answer; buying one is not what was asked.
     """
-    raise NotYetWritten("check_quantity", "buyer/check.py: compare prepared.quantity with the pin")
+    PINNED:   intent.quantity
+    PREPARED: prepared.quantity
+
+    Defense:
+    The number of purchases prepared in the bytes must equal
+    the quantity the user actually asked for.
+
+    Same quantity → AGREE.
+    Different quantity → REFUSE and show both values.
+
+    Important:
+    parse_intent() records what the user asked for.
+    This check verifies what was actually prepared.
+    """
+    if prepared.quantity != intent.quantity:
+        return refuse(
+            "quantity",
+            intent.quantity,
+            prepared.quantity,
+        )
+
+    return agree("quantity", intent.quantity)
 
 
 def check_destination(intent: IntentRecord, prepared: Prepared) -> FieldResult:
-    """TODO: the money goes to the store's own token account for the pinned mint.
-
-    The destination is the associated token account of the authority the menu showed when
-    you pinned (`intent.store_authority`) for the pinned mint. Derive it with
-    `letmebuy.token_account(...)`; never copy it from Gecko's answer.
     """
-    raise NotYetWritten("check_destination", "buyer/check.py: derive and compare the destination")
+    PINNED:   intent.store_authority + intent.mint
+    PREPARED: prepared.destination
+
+    Defense:
+    Derive the store's token account ourselves from the pinned
+    store authority and payment mint.
+
+    Derived destination == prepared destination → AGREE.
+    Different destination → REFUSE and show both values.
+
+    Important:
+    Do not trust the destination supplied by Gecko.
+    The expected destination is derived from pinned identities.
+    """
+    expected = str(
+        letmebuy.token_account(
+            Pubkey.from_string(intent.store_authority),
+            Pubkey.from_string(intent.mint),
+            )
+    )
+
+    if prepared.destination != expected:
+        return refuse(
+            "destination",
+            expected,
+            prepared.destination,
+        )
+
+    return agree("destination", expected)
 
 
 #: The order is part of the design: cheap, structural checks first.
