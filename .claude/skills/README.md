@@ -6,6 +6,7 @@
 | `gecko-buy-on-devnet` | running the buyer, a stuck buy, `expires`, a `[todo]` line | sign on mainnet, touch a key, write your checks |
 | `gecko-read-a-refusal` | `refused: true`, `REFUSED on ...`, a Gecko refusal code | retry unchanged, weaken a check |
 | `defend-my-capstone` | Friday, the defence, the six minutes, the cards | stage a card, fake a landing |
+| `capstone-checkpoint` | finishing a milestone or checking before a commit | stage, commit, push, or run a live purchase |
 
 # Writing your own skill
 

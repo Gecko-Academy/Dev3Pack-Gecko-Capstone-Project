@@ -106,7 +106,89 @@ def parse_intent(ask: str, menu: Menu, context: Context) -> IntentRecord:
 
     Fill every field of `IntentRecord` except `pinned_at`, which stamps itself.
     """
-    raise NotYetWritten("parse_intent", "buyer/intent.py: turn the ask into an IntentRecord")
+        normalized_ask = ask.casefold()
+
+    # Match the product using the meaningful menu name.
+    # Parenthetical text remains part of the canonical product name/data.
+    matches: list[MenuItem] = []
+
+    for item in menu.products:
+        base_name = item.name.split("(", 1)[0].strip().casefold()
+        if base_name and base_name in normalized_ask:
+            matches.append(item)
+
+    if not matches:
+        from .check import Refused, refuse
+
+        raise Refused(
+            refuse(
+                "product",
+                ask,
+                None,
+                where="intent",
+                note="No menu product matches the request.",
+            )
+        )
+
+    if len(matches) > 1:
+        from .check import Refused, refuse
+
+        raise Refused(
+            refuse(
+                "product",
+                ask,
+                [item.name for item in matches],
+                where="intent",
+                note="The request matches more than one menu product.",
+            )
+        )
+
+    matched_item = matches[0]
+
+    # Preserve the quantity the customer actually asked for.
+    # Budget numbers such as "up to 2 USDC" are not purchase quantities.
+    quantity = 1
+
+    quantity_words = {
+        "one": 1,
+        "two": 2,
+        "three": 3,
+        "four": 4,
+        "five": 5,
+    }
+
+    quantity_match = re.search(
+        r"\b(one|two|three|four|five)\b"
+        r"(?!\s+(?:usdc|usd|usdt|dollars?))",
+        normalized_ask,
+    )
+
+    if quantity_match:
+        quantity = quantity_words[quantity_match.group(1)]
+    else:
+        numeric_quantity = re.search(
+            r"\b(\d+)\s+(?:"
+            r"units?|items?|bags?|cups?|bottles?|"
+            r"espressos?|lattes?|beans?"
+            r")\b",
+            normalized_ask,
+        )
+        if numeric_quantity:
+            quantity = int(numeric_quantity.group(1))
+
+    return IntentRecord(
+        ask=ask,
+        store=context.store,
+        product=matched_item.name,
+        quantity=quantity,
+        budget_raw=context.budget_raw,
+        mint=context.pay_mint,
+        buyer=context.buyer,
+        network=context.network,
+        store_authority=menu.authority,
+        menu_price_raw=matched_item.price_raw,
+    )
+
 
 
 def slug(text: str) -> str:
