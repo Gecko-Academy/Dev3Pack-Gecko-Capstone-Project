@@ -283,6 +283,7 @@ makes a reader trust the repository more, not less.
 | `tests/` | offline tests; `test_your_work.py` turns from `x` to real as you write each TODO |
 | `projects/` | one project per day, each with its own README and local `check.py` |
 | `docs/` | `connect.md`, `adr/`, `ISSUES.md`, `EVAL_REPORT.md`, `DEFENCE.md`, `working-with-claude.md` |
+| `demo/DEMO_DAY.ipynb` | Friday's six minutes as a notebook, one cell per beat |
 | `.claude/` | skills (`gecko-buy-on-devnet`, `gecko-read-a-refusal`, `defend-my-capstone`, `gecko-connect-mcp`) and the `call-reviewer` agent |
 | `workflows/` | `survey.py`, grading several candidate APIs in parallel |
 | `PRD.md`, `AGENTS.md`, `CLAUDE.md` | the product note, what a coding assistant should know, and the Claude Code import of it |

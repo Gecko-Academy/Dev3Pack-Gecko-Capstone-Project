@@ -48,6 +48,19 @@ uv run buyer --cards --recorded                        # 4/4 once your steps and
 uv run buyer "one espresso" --recorded --card tampered # one card at a time
 ```
 
+## The notebook version
+
+`demo/DEMO_DAY.ipynb` is these six minutes as one cell per beat: your README, `list_stores`,
+the live buy, the receipt, the card (set `CARD` to the one drawn), tests, the ADR, and the
+mainnet and recorded lanes. Open it with:
+
+```bash
+uv run --with jupyter jupyter lab demo/DEMO_DAY.ipynb
+```
+
+Run it once on Thursday and keep the outputs: if the network fails on stage, the notebook
+that already ran is your fallback, and you say that is what it is.
+
 ## Before you go on stage
 
 - [ ] One devnet receipt is **committed** (`receipts/<sig8>.md`). If the network fails at
