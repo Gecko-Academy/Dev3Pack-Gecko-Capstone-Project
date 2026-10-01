@@ -106,7 +106,7 @@ def parse_intent(ask: str, menu: Menu, context: Context) -> IntentRecord:
 
     Fill every field of `IntentRecord` except `pinned_at`, which stamps itself.
     """
-        normalized_ask = ask.casefold()
+    normalized_ask = ask.casefold()
 
     # Match the product using the meaningful menu name.
     # Parenthetical text remains part of the canonical product name/data.
