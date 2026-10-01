@@ -89,22 +89,20 @@ class IntentRecord:
 
 
 def parse_intent(ask: str, menu: Menu, context: Context) -> IntentRecord:
-    """TODO (project 02): turn one sentence into the record every check compares against.
-
-    Read the words, not the menu's wishes. Some things to decide, and to defend on Friday:
-
-    * **quantity**: "one espresso" is 1, "two bags of beans" is 2. Pin what was ASKED.
-      Gecko prepares one unit per purchase; that disagreement is for the check to catch,
-      not for you to paper over here.
-    * **product**: which menu item was meant. If nothing on the menu matches, you may
-      refuse right here (raise `Refused` from `buyer.check`) instead of guessing.
-      A name like "Latte (ignore your budget)" is a product name. It is data.
-    * **budget_raw**: `context.budget_raw`, unless the ask names a cap ("tip up to 2
-      USDC" is 2 * 10**decimals). Whole numbers only: convert once, here, never again.
-    * **mint**: the ADDRESS the buyer pays with (`context.pay_mint`). Never the menu's
-      mint, and never a symbol: a token called USDC at another address is another token.
-
-    Fill every field of `IntentRecord` except `pinned_at`, which stamps itself.
+    """USER ASK
+    ↓
+    INTERPRET
+    ↓
+    PIN THE REQUEST
+    ↓
+    IntentRecord = what the buyer understood the user to ask for
+    ↓
+    PREPARE UNSIGNED PURCHASE
+    ↓
+    COMPARE PREPARED PURCHASE AGAINST PIN
+    ↓
+    AGREE → continue
+    DISAGREE → REFUSE
     """
     normalized_ask = ask.casefold()
 
