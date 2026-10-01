@@ -98,14 +98,37 @@ def pin_intent(run: Run) -> None:
 
 
 def prepare(run: Run) -> None:
-    """TODO (project 02): ask Gecko for the purchase, as unsigned bytes, exactly once.
-
-    Call `prepare_purchase` with the store, the product, the buyer and the network FROM
-    THE PIN, never from the ask. Leave the raw answer on `run.answer` and
-    `Prepared.from_answer(run.answer)` on `run.prepared`. If Gecko refuses, `from_answer`
-    raises `GeckoRefused`: let it rise, the runner records it.
     """
-    raise NotYetWritten("prepare", "buyer/agent.py: call prepare_purchase with the pinned fields")
+    PREPARE THE PURCHASE FROM THE PIN.
+
+    PIN
+      ↓
+    prepare_purchase()
+      ↓
+    raw answer
+      ↓
+    Prepared
+
+    Defense boundary:
+    The purchase request comes from run.intent, not directly
+    from the user's ask or other mutable context.
+
+    This step prepares unsigned bytes.
+    It does not sign or approve the purchase.
+    """
+    if run.intent is None:
+        raise OrderBroken("prepare requires a pinned intent")
+
+    run.answer = run.gecko.call(
+        "prepare_purchase",
+        {
+            "store": run.intent.store,
+            "product": run.intent.product,
+            "buyer": run.intent.buyer,
+            "network": run.intent.network,
+        },
+    )
+    run.prepared = Prepared.from_answer(run.answer)
 
 
 def check(run: Run) -> None:
