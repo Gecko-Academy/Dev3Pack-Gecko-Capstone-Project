@@ -132,11 +132,26 @@ def prepare(run: Run) -> None:
 
 
 def check(run: Run) -> None:
-    """TODO (project 02): compare the prepared purchase with the pin, field by field.
-
-    Leave the `Verdict` from `check_all` on `run.verdict`. Do not sign here.
     """
-    raise NotYetWritten("check", "buyer/agent.py: run check_all on the pin and the prepared bytes")
+    COMPARE THE PREPARED PURCHASE AGAINST THE PIN.
+
+    PIN
+      ↓
+    run.intent
+      ↓
+    check_all()
+      ↑
+    run.prepared
+      ↓
+    VERDICT
+      ├── agree → continue
+      ├── refusal → runner refuses
+      └── not-written → runner stops
+
+    This step only evaluates the prepared purchase.
+    It does not sign, modify, or send anything.
+    """
+    run.verdict = check_all(run.intent, run.prepared)
 
 
 def sign(run: Run) -> None:
