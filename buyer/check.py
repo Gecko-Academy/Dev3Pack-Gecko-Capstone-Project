@@ -163,12 +163,29 @@ def check_price(intent: IntentRecord, prepared: Prepared) -> FieldResult:
 
 
 def check_mint(intent: IntentRecord, prepared: Prepared) -> FieldResult:
-    """TODO: the token paid is the pinned mint, compared as an ADDRESS.
-
-    Use case 3 ("module 3, paid in USDC") must refuse a token called USDC at another
-    address. There is no symbol anywhere in `Prepared`, on purpose.
     """
-    raise NotYetWritten("check_mint", "buyer/check.py: compare prepared.mint with the pin")
+    PINNED:   intent.mint
+    PREPARED: prepared.mint
+
+    Defense:
+    The prepared purchase must use the exact payment mint address
+    that was pinned from the buyer's context.
+
+    Same address → AGREE.
+    Different address → REFUSE and show both addresses.
+
+    Important:
+    Token names/symbols are not payment identity.
+    The mint address is the identity.
+    """
+    if prepared.mint != intent.mint:
+        return refuse(
+            "mint",
+            intent.mint,
+            prepared.mint,
+        )
+
+    return agree("mint", intent.mint)
 
 
 def check_quantity(intent: IntentRecord, prepared: Prepared) -> FieldResult:
