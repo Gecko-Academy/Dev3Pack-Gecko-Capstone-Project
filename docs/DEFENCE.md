@@ -134,9 +134,30 @@ optional extra channel, once a transaction has worked from the terminal.
 On stage, run `show` first so the room sees three espressos' worth of USDC, then the buy,
 then `show` again: the USDC went down by exactly the price.
 
-## Questions you should be ready for
+## The seven questions you will be asked
 
-- Why does Gecko never hold your key, and what would change if it did?
-- Which of your seven checks would you drop first, and what risk would you accept?
-- Your buyer refused. How does the person at the chat know it was right to?
-- What does your receipt NOT prove?
+The same list is on the course's session 15 page. Have each answer ready with a file
+attached.
+
+**The evidence**
+
+1. **How do you know it landed?** Not "the terminal said so". The receipt: two ledger
+   reads, the deltas, `total_purchases` going from n to n+1, and the explorer link.
+2. **What does your receipt not prove?** It proves what moved. It cannot prove that you
+   asked for the right thing. Have the limit ready in `docs/ISSUES.md`.
+3. **Your buyer refused. How does the person at the chat know it was right to?** The
+   refusal names one field and both values, and `refusals/<stamp>-<field>.json` keeps it.
+
+**The design**
+
+4. **Why does Gecko never hold your key, and what would change if it did?** Know where
+   your key lives, and which step in `buyer/signer.py` uses it.
+5. **Which of your seven checks would you drop first, and what risk would you accept?**
+   Answer from `buyer/check.py`, field by field.
+6. **What would change your mind about your ADR?** The measurement that would reverse
+   it. If nothing would, it was a preference, not a decision.
+
+**The limits**
+
+7. **What breaks it?** You already know one thing. Say it before the card makes it
+   obvious.
