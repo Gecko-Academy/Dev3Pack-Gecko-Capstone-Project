@@ -71,12 +71,30 @@ def read_menu(run: Run) -> None:
 
 
 def pin_intent(run: Run) -> None:
-    """TODO (project 02): pin what was asked, to disk, before any bytes exist.
-
-    Leave `run.intent` (from `parse_intent`) and `run.intent_path` (from `pin`, written to
-    `run.out / "intents"`). The runner checks the file is there and says the same thing.
     """
-    raise NotYetWritten("pin_intent", "buyer/agent.py: parse_intent, then pin it to disk")
+    PIN THE USER'S REQUEST BEFORE ANY PURCHASE BYTES EXIST.
+
+    ASK
+      ↓
+    parse_intent()
+      ↓
+    IntentRecord = "what we understood the user to ask for"
+      ↓
+    pin to disk
+      ↓
+    PREPARE
+
+    Defense boundary:
+    The pin becomes the frozen reference for every later check.
+    Prepared purchase data must never be used to create the pin.
+
+    If the request cannot be parsed, let the existing refusal
+    propagate to the runner.
+    """
+    if run.menu is None:
+        raise OrderBroken("read_menu left no menu")
+    run.intent = parse_intent(run.ask, run.menu, run.context)
+    run.intent_path = pin(run.intent, run.out / "intents")
 
 
 def prepare(run: Run) -> None:
