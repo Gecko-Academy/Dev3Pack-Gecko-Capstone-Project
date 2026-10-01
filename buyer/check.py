@@ -104,12 +104,27 @@ def check_store(intent: IntentRecord, prepared: Prepared) -> FieldResult:
 
 
 def check_product(intent: IntentRecord, prepared: Prepared) -> FieldResult:
-    """TODO: the product in the bytes is the product that was pinned.
-
-    Use case 2 ("one general-admission ticket") must refuse when the prepared purchase is
-    the VIP ticket. Decide how exact "the same product" is, and write it in your ADR.
     """
-    raise NotYetWritten("check_product", "buyer/check.py: compare prepared.product with the pin")
+    PINNED:   intent.product
+    PREPARED: prepared.product
+
+    Defense:
+    The prepared purchase must agree with the product the user requested.
+
+    Agree → continue.
+    Disagree → refuse and show both values.
+
+    Current policy:
+    Exact product-name equality.
+    Broader matching/normalization is a separate design decision.
+    """
+    if prepared.product != intent.product:
+        return refuse(
+            "product",
+            intent.product,
+            prepared.product,
+        )
+    return agree("product", intent.product)
 
 
 def check_price(intent: IntentRecord, prepared: Prepared) -> FieldResult:
