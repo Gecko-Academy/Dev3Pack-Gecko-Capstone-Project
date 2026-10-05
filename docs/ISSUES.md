@@ -1,16 +1,10 @@
 # Issues
 
-*Real incidents from your week, newest first. Thursday's project 04 needs at least one
-that actually happened on devnet (not one you invented). The top three are what you would
-bring up on Friday if asked "what went wrong".*
+## 2026-10-05: My smoke test was using an old report
 
-*One entry per incident, in this shape. Delete this italic block when you have one.*
-
-## YYYY-MM-DD: <what broke, in one line>
-
-- **What I saw:** the exact output, pasted, and the command that printed it.
-- **What was actually wrong:** the cause, once you knew it. Not the first guess.
-- **How I found it:** the read, the log line or the test that showed it.
-- **What I changed:** the commit, and the test that is now red if it comes back.
-- **What it cost:** time, devnet SOL, a signature that landed wrong, or nothing.
-- **Would the checks have caught it?** Which field, or "no, and here is why".
+- **What I saw:** The Project 04 checker said the first purchase had not landed, even though I had already finished the sign, verify, submit, and receipt steps. The report showed the first case stopped at `sign is not written yet`.
+- **What was actually wrong:** `smoke-report.json` came from an earlier run, before I finished the purchase loop. The code was updated, but the saved report was not.
+- **How I found it:** I opened `smoke-report.json` and saw that `1-espresso` ended at the `sign` step instead of ending with a receipt.
+- **What I changed:** I ran `make smoke-recorded` first to confirm the offline fallback still worked. Then I ran `make smoke` on devnet again. The new report shows one Espresso purchase landed and the other five cases were stopped safely.
+- **What it cost:** One intentional devnet Espresso purchase: 1,000,000 raw class tokens and a small devnet SOL fee. The other five cases did not sign anything.
+- **Would the checks have caught it?** Yes. The Project 04 checker caught it because the first case had no reconciled receipt and the live report did not match the recorded report.

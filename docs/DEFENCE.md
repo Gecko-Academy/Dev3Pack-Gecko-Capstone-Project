@@ -10,13 +10,13 @@ moved) or a **refusal** (it did not sign, and this is the field that disagreed).
 
 | Min | On screen | Backed by | What I say |
 |---|---|---|---|
-| 0:00 | your README's first lines: the sentence and the explorer link | `README.md` | |
-| 0:45 | your assistant with Gecko connected: `list_stores` shows *your* store | `docs/connect.md`, `store/store.json` | |
-| 1:30 | the live buy: pin, prepare, 7 ticks, sign, verify, submit | `uv run buyer "one espresso" --devnet` | |
-| 2:30 | the landing: the explorer, then the receipt with ledger deltas | `receipts/<sig8>.md` | |
-| 3:15 | **the injected failure**: the judge draws a card; your buyer refuses and signs nothing | `buyer/check.py`, `refusals/` | |
-| 4:30 | tests and the five-case table; one test that was red first | `uv run pytest`, `docs/EVAL_REPORT.md` | |
-| 5:15 | the ADR: the decision, and what would reverse it | `docs/adr/0001-refusals-before-signing.md` | |
+| 0:00 | Project summary and a receipt explorer link | `README.md`, `receipts/5J7qAXeZ.md` | My project is a buyer that checks a purchase before it signs anything. If it matches what I asked for, it creates a receipt showing what moved. If it does not match, it stops and explains why. |
+| 0:45 | My store and its menu | `store/store.json`, `docs/connect.md` | This is my devnet store and its products. Reading the menu happens before a purchase is prepared, so I can decide what I want before any transaction is created. |
+| 1:30 | A live purchase | `uv run buyer "one AI Interaction Audit" --devnet` | The buyer follows the same order every time: it saves what I asked for, prepares the purchase, checks it, signs only if it matches, checks the signed version, sends it, and saves a receipt. My key stays on my machine. |
+| 2:30 | Explorer and receipt | `receipts/4qggqtZF.md`, `receipts/5J7qAXeZ.md` | I do not rely only on the terminal saying it worked. The receipt reads the ledger before and after the purchase. It shows the buyer lost the right amount, the store gained it, and the purchase count went up by one. |
+| 3:15 | A safety card | `buyer/check.py`, `refusals/`, `uv run buyer --cards --recorded` | The card can change the quantity, budget, signed bytes, or timing. The buyer should stop on its own. It gives a clear reason, and it does not sign or submit a purchase that fails a check. |
+| 4:30 | Smoke tests and fallback | `smoke-report.json`, `smoke-report.recorded.json`, `docs/EVAL_REPORT.md` | The live smoke test was 6/6: one purchase landed and five cases were refused. The recorded smoke test was also 6/6. If the network or hosted service is down, I can use the recorded version instead of trying to debug while presenting. |
+| 5:15 | Design choice and limits | `docs/adr/0001-refusals-before-signing.md`, `docs/ISSUES.md` | The main choice in this project is to refuse before signing. I also keep an incident log because a successful code change is not enough if an old report makes it look like the system still fails. This is devnet evidence, not proof that every future request is safe. |
 
 The **finalists** (the students presenting on Friday, named by the instructor) may do
 minute 1:30 on mainnet against geckocoffee instead, with a registered, funded wallet (see
