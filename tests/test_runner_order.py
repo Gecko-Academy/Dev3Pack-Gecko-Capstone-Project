@@ -14,7 +14,7 @@ import pytest
 from conftest import fixture
 
 from buyer import agent
-from buyer.check import FieldResult, Verdict
+from buyer.check import FieldResult, NotYetWritten, Verdict
 from buyer.cli import recorded_run
 from buyer.intent import IntentRecord, pin
 
@@ -95,13 +95,16 @@ def test_an_unwritten_check_is_a_refusal_not_a_pass(
     run = run_for(tmp_path)
     monkeypatch.setattr(agent, "pin_intent", _pin)
     monkeypatch.setattr(agent, "prepare", _prepare)
+    todo = NotYetWritten("check_product", "test-only unfinished check")
     monkeypatch.setattr(
-        agent, "check", lambda r: setattr(r, "verdict", agent.check_all(r.intent, r.prepared))
+        agent,
+        "check",
+        lambda r: setattr(r, "verdict", Verdict(unwritten=todo)),
     )
     monkeypatch.setattr(agent, "sign", lambda r: setattr(r, "signed", r.signer.sign(r.prepared)))
     outcome = agent.execute(run, say=lambda _: None)
-    if outcome.kind != "not-written":
-        pytest.skip("all seven checks are written: this test is about the template")
+
+    assert outcome.kind == "not-written"
     assert run.signer.calls == 0  # type: ignore[attr-defined]
 
 

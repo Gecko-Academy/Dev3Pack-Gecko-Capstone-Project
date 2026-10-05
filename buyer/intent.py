@@ -48,7 +48,7 @@ class Menu:
                     authority=entry["authority"],
                     total_purchases=entry.get("total_purchases"),
                     products=tuple(
-                        MenuItem(p["name"], int(p["price_raw"]), int(p["decimals"]), p["mint"])
+                        MenuItem(p["name"], int(p["price_raw"]), int(p["decimals"]),p["mint"])
                         for p in entry.get("products", [])
                     ),
                 )
@@ -83,7 +83,7 @@ class IntentRecord:
     network: str
     #: the store's authority as the menu showed it: where the money is meant to go
     store_authority: str
-    #: the price the menu showed when this was pinned; None if the product is not on it
+    #: the price the menu showed when this was pinned; None if the product is not onit
     menu_price_raw: int | None
     pinned_at: str = field(default_factory=lambda: datetime.now(UTC).isoformat())
 
@@ -118,11 +118,12 @@ def parse_intent(ask: str, menu: Menu, context: Context) -> IntentRecord:
     if not matches:
         from .check import Refused, refuse
 
+        available = [item.name for item in menu.products]
         raise Refused(
             refuse(
                 "product",
                 ask,
-                None,
+                available,
                 where="intent",
                 note="No menu product matches the request.",
             )
