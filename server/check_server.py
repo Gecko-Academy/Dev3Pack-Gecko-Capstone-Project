@@ -69,4 +69,14 @@ def check_purchase(
 
 
 if __name__ == "__main__":
-    server.run()
+    import os
+
+    transport = os.environ.get("MCP_TRANSPORT", "stdio")
+    if transport == "streamable-http":
+        server.run(
+            transport,
+            host=os.environ.get("HOST", "0.0.0.0"),
+            port=int(os.environ.get("PORT", "8000")),
+        )
+    else:
+        server.run(transport)
