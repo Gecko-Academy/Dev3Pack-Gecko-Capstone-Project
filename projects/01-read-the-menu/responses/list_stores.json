@@ -1,0 +1,313 @@
+{
+  "program": "BUYuxRfhCMWavaUWxhGtPP3ksKEDZxCD5gzknk3JfAya",
+  "stores": [
+    {
+      "store": "geckocoffee",
+      "address": "HVkbYf9PBF49WVViFf7eM1VescsgRHNeu4XJv1XveC8x",
+      "authority": "DMjTEZJuV3mpfzBNeeuFy9m47A1bj5CXVhCNVo7BEPzy",
+      "total_purchases": 63,
+      "fulfilment": {
+        "telegram_channel_id": "@geckocoffeeshop",
+        "set": true
+      },
+      "products": [
+        {
+          "name": "Espresso",
+          "price_raw": 100000,
+          "decimals": 6,
+          "price_ui": "0.1",
+          "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "mint_note": "USDC",
+          "token_program": {
+            "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "name": "classic-spl-token",
+            "read": true,
+            "recognised": true
+          }
+        },
+        {
+          "name": "Sparkling water",
+          "price_raw": 50000,
+          "decimals": 6,
+          "price_ui": "0.05",
+          "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "mint_note": "USDC",
+          "token_program": {
+            "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "name": "classic-spl-token",
+            "read": true,
+            "recognised": true
+          }
+        },
+        {
+          "name": "Cappuccino",
+          "price_raw": 150000,
+          "decimals": 6,
+          "price_ui": "0.15",
+          "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "mint_note": "USDC",
+          "token_program": {
+            "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "name": "classic-spl-token",
+            "read": true,
+            "recognised": true
+          }
+        },
+        {
+          "name": "Mochaccino",
+          "price_raw": 200000,
+          "decimals": 6,
+          "price_ui": "0.2",
+          "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "mint_note": "USDC",
+          "token_program": {
+            "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "name": "classic-spl-token",
+            "read": true,
+            "recognised": true
+          }
+        },
+        {
+          "name": "Brewed Coffee (drip)",
+          "price_raw": 120000,
+          "decimals": 6,
+          "price_ui": "0.12",
+          "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "mint_note": "USDC",
+          "token_program": {
+            "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "name": "classic-spl-token",
+            "read": true,
+            "recognised": true
+          }
+        },
+        {
+          "name": "Espresso (double)",
+          "price_raw": 128000,
+          "decimals": 6,
+          "price_ui": "0.128",
+          "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "mint_note": "USDC",
+          "token_program": {
+            "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "name": "classic-spl-token",
+            "read": true,
+            "recognised": true
+          }
+        },
+        {
+          "name": "Decaf Espresso",
+          "price_raw": 100000,
+          "decimals": 6,
+          "price_ui": "0.1",
+          "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "mint_note": "USDC",
+          "token_program": {
+            "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "name": "classic-spl-token",
+            "read": true,
+            "recognised": true
+          }
+        },
+        {
+          "name": "Oat Cappuccino",
+          "price_raw": 240000,
+          "decimals": 6,
+          "price_ui": "0.24",
+          "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "mint_note": "USDC",
+          "token_program": {
+            "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "name": "classic-spl-token",
+            "read": true,
+            "recognised": true
+          }
+        },
+        {
+          "name": "Espresso Macchiato",
+          "price_raw": 120000,
+          "decimals": 6,
+          "price_ui": "0.12",
+          "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "mint_note": "USDC",
+          "token_program": {
+            "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "name": "classic-spl-token",
+            "read": true,
+            "recognised": true
+          }
+        },
+        {
+          "name": "Latte Macchiato",
+          "price_raw": 176000,
+          "decimals": 6,
+          "price_ui": "0.176",
+          "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "mint_note": "USDC",
+          "token_program": {
+            "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "name": "classic-spl-token",
+            "read": true,
+            "recognised": true
+          }
+        },
+        {
+          "name": "Mocha",
+          "price_raw": 192000,
+          "decimals": 6,
+          "price_ui": "0.192",
+          "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "mint_note": "USDC",
+          "token_program": {
+            "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "name": "classic-spl-token",
+            "read": true,
+            "recognised": true
+          }
+        },
+        {
+          "name": "Dirty Chai",
+          "price_raw": 200000,
+          "decimals": 6,
+          "price_ui": "0.2",
+          "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "mint_note": "USDC",
+          "token_program": {
+            "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "name": "classic-spl-token",
+            "read": true,
+            "recognised": true
+          }
+        },
+        {
+          "name": "Chai Latte",
+          "price_raw": 180000,
+          "decimals": 6,
+          "price_ui": "0.18",
+          "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "mint_note": "USDC",
+          "token_program": {
+            "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "name": "classic-spl-token",
+            "read": true,
+            "recognised": true
+          }
+        },
+        {
+          "name": "Matcha Latte",
+          "price_raw": 200000,
+          "decimals": 6,
+          "price_ui": "0.2",
+          "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "mint_note": "USDC",
+          "token_program": {
+            "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "name": "classic-spl-token",
+            "read": true,
+            "recognised": true
+          }
+        },
+        {
+          "name": "Babyccino",
+          "price_raw": 60000,
+          "decimals": 6,
+          "price_ui": "0.06",
+          "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "mint_note": "USDC",
+          "token_program": {
+            "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "name": "classic-spl-token",
+            "read": true,
+            "recognised": true
+          }
+        },
+        {
+          "name": "Cold Brew",
+          "price_raw": 180000,
+          "decimals": 6,
+          "price_ui": "0.18",
+          "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "mint_note": "USDC",
+          "token_program": {
+            "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "name": "classic-spl-token",
+            "read": true,
+            "recognised": true
+          }
+        },
+        {
+          "name": "Still Water",
+          "price_raw": 60000,
+          "decimals": 6,
+          "price_ui": "0.06",
+          "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "mint_note": "USDC",
+          "token_program": {
+            "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "name": "classic-spl-token",
+            "read": true,
+            "recognised": true
+          }
+        },
+        {
+          "name": "Tonic Water",
+          "price_raw": 100000,
+          "decimals": 6,
+          "price_ui": "0.1",
+          "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "mint_note": "USDC",
+          "token_program": {
+            "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "name": "classic-spl-token",
+            "read": true,
+            "recognised": true
+          }
+        },
+        {
+          "name": "Coconut Water",
+          "price_raw": 140000,
+          "decimals": 6,
+          "price_ui": "0.14",
+          "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "mint_note": "USDC",
+          "token_program": {
+            "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "name": "classic-spl-token",
+            "read": true,
+            "recognised": true
+          }
+        },
+        {
+          "name": "Espresso Tonic",
+          "price_raw": 208000,
+          "decimals": 6,
+          "price_ui": "0.208",
+          "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "mint_note": "USDC",
+          "token_program": {
+            "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "name": "classic-spl-token",
+            "read": true,
+            "recognised": true
+          }
+        }
+      ]
+    }
+  ],
+  "skipped_undecodable": 10,
+  "skipped_undecodable_note": "program-owned accounts whose bytes are not a store listing (another account type, or a layout this reader does not know). They are counted so the number is visible and never guessed at; no store named in `stores` was skipped.",
+  "store_filter": {
+    "applied": true,
+    "query": "geckocoffee",
+    "note": "case-insensitive substring on the store name; nothing else is filtered"
+  },
+  "product_filter": {
+    "applied": false,
+    "query": null,
+    "note": "a product match shows only the matching products; a match on the store name shows that store's whole menu. Call again without `product` for every menu in full."
+  },
+  "truncated": false,
+  "note": "a MENU read from one node's view of the chain, not an authorization: the authorities listed here are what the store accounts SAY, and a purchase still verifies everything before anything signs. Every store here is buyable through prepare_purchase, which re-reads the one you name from its own account rather than trusting this list.",
+  "mint_note_caveat": "`mint_note` is a human LABEL, and two different mints can wear the same one. Match on `mint` and `token_program`, never on the label: a token-2022 mint and a classic-spl-token mint are different assets even when both are called USDC-something, and a wallet holding one CANNOT pay with it where the other is priced. `token_program.read: false` means the mint could not be read and the program is unknown \u2014 it does not mean classic.",
+  "network": "mainnet"
+}

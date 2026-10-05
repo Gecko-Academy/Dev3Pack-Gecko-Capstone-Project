@@ -1,0 +1,109 @@
+{
+  "refused": true,
+  "code": "product-unknown",
+  "reason": "'geckocoffee' does not sell 'Unicorn latte' \u2014 it lists Espresso, Sparkling water, Cappuccino, Mochaccino, Brewed Coffee (drip), Espresso (double), Decaf Espresso, Oat Cappuccino, Espresso Macchiato, Latte Macchiato, Mocha, Dirty Chai, Chai Latte, Matcha Latte, Babyccino, Cold Brew, Still Water, Tonic Water, Coconut Water, Espresso Tonic. The price and the mint are per-product facts written in the store's own account, so an unlisted product has neither. THE MENU IS THE GROUND TRUTH AND THE CHOICE IS NOT MINE TO MAKE: if exactly one of those is plainly what the buyer meant, call again with its EXACT name; if more than one could be, ASK THE BUYER WHICH \u2014 do not pick for them, and do not pick the first that looks close.",
+  "network": "mainnet",
+  "close_matches": [],
+  "products": [
+    {
+      "name": "Espresso",
+      "price_ui": "0.1",
+      "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+    },
+    {
+      "name": "Sparkling water",
+      "price_ui": "0.05",
+      "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+    },
+    {
+      "name": "Cappuccino",
+      "price_ui": "0.15",
+      "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+    },
+    {
+      "name": "Mochaccino",
+      "price_ui": "0.2",
+      "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+    },
+    {
+      "name": "Brewed Coffee (drip)",
+      "price_ui": "0.12",
+      "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+    },
+    {
+      "name": "Espresso (double)",
+      "price_ui": "0.128",
+      "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+    },
+    {
+      "name": "Decaf Espresso",
+      "price_ui": "0.1",
+      "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+    },
+    {
+      "name": "Oat Cappuccino",
+      "price_ui": "0.24",
+      "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+    },
+    {
+      "name": "Espresso Macchiato",
+      "price_ui": "0.12",
+      "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+    },
+    {
+      "name": "Latte Macchiato",
+      "price_ui": "0.176",
+      "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+    },
+    {
+      "name": "Mocha",
+      "price_ui": "0.192",
+      "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+    },
+    {
+      "name": "Dirty Chai",
+      "price_ui": "0.2",
+      "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+    },
+    {
+      "name": "Chai Latte",
+      "price_ui": "0.18",
+      "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+    },
+    {
+      "name": "Matcha Latte",
+      "price_ui": "0.2",
+      "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+    },
+    {
+      "name": "Babyccino",
+      "price_ui": "0.06",
+      "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+    },
+    {
+      "name": "Cold Brew",
+      "price_ui": "0.18",
+      "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+    },
+    {
+      "name": "Still Water",
+      "price_ui": "0.06",
+      "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+    },
+    {
+      "name": "Tonic Water",
+      "price_ui": "0.1",
+      "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+    },
+    {
+      "name": "Coconut Water",
+      "price_ui": "0.14",
+      "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+    },
+    {
+      "name": "Espresso Tonic",
+      "price_ui": "0.208",
+      "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+    }
+  ]
+}

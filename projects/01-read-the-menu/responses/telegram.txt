@@ -1,0 +1,11 @@
+geckocoffee:
+  • Espresso — 0.1 USDC
+  • Sparkling water — 0.05 USDC
+  • Cappuccino — 0.15 USDC
+  • Mochaccino — 0.2 USDC
+  • Brewed Coffee (drip) — 0.12 USDC
+  • Espresso (double) — 0.128 USDC
+  … 14 more products
+
+(10 program accounts were not readable as a store — counted, not guessed at.)
+To buy: buy <product> from <store> for <your wallet address>.
