@@ -1,0 +1,20 @@
+{
+  "ask": "one AI Interaction Audit",
+  "network": "devnet",
+  "store": "dev3apeaircreative-studio",
+  "product": "AI Interaction Audit",
+  "signature": "4qggqtZFbMk6orwp2TuY15CkCD5zJJyX6E1BERvWEFu9rXWpDa55KNxDspgtH8zBNz4Vpj79uBYbzY6D64gkAHcg",
+  "explorer": "https://explorer.solana.com/tx/4qggqtZFbMk6orwp2TuY15CkCD5zJJyX6E1BERvWEFu9rXWpDa55KNxDspgtH8zBNz4Vpj79uBYbzY6D64gkAHcg?cluster=devnet",
+  "slot": 507778937,
+  "price_raw": 1000,
+  "mint": "3iQBBYSGW3q4XVNHhLUCN4wwD87SZkeFkpdX7fZgn8oM",
+  "buyer": "5BWa9anmqwcwh7CaaFPZP13gsakLJudS4bCRyHosMLFs",
+  "buyer_delta_raw": -1000,
+  "store_delta_raw": 1000,
+  "total_purchases_before": 0,
+  "total_purchases_after": 1,
+  "intent_pinned_at": "2026-10-05T15:37:03.138102+00:00",
+  "source": "devnet",
+  "reconciled": true,
+  "findings": []
+}
