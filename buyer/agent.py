@@ -160,7 +160,9 @@ def sign(run: Run) -> None:
     `run.signer.sign(run.prepared)` returns the signed base64. Leave it on `run.signed`.
     The signer refuses by itself if the cluster, the budget or the blockhash is wrong.
     """
-    raise NotYetWritten("sign", "buyer/agent.py: sign the prepared bytes with run.signer")
+    if run.prepared is None:
+        raise OrderBroken("sign requires prepared purchase bytes")
+    run.signed = run.signer.sign(run.prepared)
 
 
 def verify(run: Run) -> None:
@@ -170,7 +172,18 @@ def verify(run: Run) -> None:
     `binding_strength` from the prepared answer, `last_valid_block_height`, and
     `rpc_url = run.chain.rpc_url`. Leave the answer on `run.verified`.
     """
-    raise NotYetWritten("verify", "buyer/agent.py: call verify_signed_transaction")
+    if run.prepared is None or run.signed is None:
+        raise OrderBroken("verify requires prepared and signed transaction bytes")
+    run.verified = run.gecko.call(
+        "verify_signed_transaction",
+        {
+            "transaction": run.signed,
+            "binding": run.prepared.binding,
+            "binding_strength": run.prepared.binding_strength,
+            "last_valid_block_height": run.prepared.last_valid_block_height,
+            "rpc_url": run.chain.rpc_url,
+        },
+    )
 
 
 def submit(run: Run) -> None:
@@ -181,7 +194,17 @@ def submit(run: Run) -> None:
     `run.submitted`. Never call it twice for the same bytes: if it did not confirm, read
     what it said first.
     """
-    raise NotYetWritten("submit", "buyer/agent.py: call submit_transaction")
+    if run.prepared is None or run.signed is None:
+        raise OrderBroken("submit requires prepared and signed transaction bytes")
+    run.submitted = run.gecko.call(
+        "submit_transaction",
+        {
+            "transaction": run.signed,
+            "binding": run.prepared.binding,
+            "last_valid_block_height": run.prepared.last_valid_block_height,
+            "rpc_url": run.chain.rpc_url,
+        },
+    )
 
 
 def write_the_receipt(run: Run) -> None:
@@ -190,7 +213,21 @@ def write_the_receipt(run: Run) -> None:
     `read_snapshot(...)` for the after-read, then `reconcile(...)` with `run.before`, and
     leave the `Receipt` on `run.receipt`. The runner writes it to `receipts/`.
     """
-    raise NotYetWritten("write_the_receipt", "buyer/agent.py: read the ledger and reconcile")
+    if run.intent is None or run.prepared is None:
+        raise OrderBroken("write_the_receipt requires intent and prepared purchase")
+    if run.before is None:
+        raise OrderBroken("write_the_receipt requires a before-ledger snapshot")
+    if run.submitted is None:
+        raise OrderBroken("write_the_receipt requires a submitted transaction")
+    after = read_snapshot(run.chain, run.intent, run.prepared)
+    run.receipt = reconcile(
+        run.intent,
+        run.prepared,
+        run.before,
+        after,
+        run.submitted,
+        run.source,
+    )
 
 
 # ==========================================================================================
