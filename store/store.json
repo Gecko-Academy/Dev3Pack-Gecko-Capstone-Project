@@ -2,8 +2,21 @@
   "store": "dev3apeaircreative-studio",
   "telegram_channel": "",
   "products": [
-    {"name": "AI Interaction Audit", "price_raw": 1000, "mint": "own"},
-    {"name": "Prototype Review", "price_raw": 2000, "mint": "own"},
-    {"name": "AI Experience Blueprint", "price_raw": 3000, "mint": "own"}
-  ]
+    {
+      "name": "AI Interaction Audit",
+      "price_raw": 1000,
+      "mint": "own"
+    },
+    {
+      "name": "Prototype Review",
+      "price_raw": 2000,
+      "mint": "own"
+    },
+    {
+      "name": "AI Experience Blueprint",
+      "price_raw": 3000,
+      "mint": "own"
+    }
+  ],
+  "address": "2UYkzfiLrwD8RGNGzHkwmhqTcVGd85DTSNc8uL3A6mTS"
 }
