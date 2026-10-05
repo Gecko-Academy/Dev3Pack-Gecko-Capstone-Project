@@ -1,7 +1,6 @@
 name: check
 
-# Every push: the key scan, lint, the offline tests, and the recorded cases as a report.
-# No secret is read anywhere: nothing here signs, and the recorded lane needs no network.
+# Offline CI only: no signer, credentials, live RPC calls, or devnet purchases.
 on:
   push:
   pull_request:
@@ -20,17 +19,16 @@ jobs:
       - uses: astral-sh/setup-uv@v5
         with:
           python-version: "3.11"
-      # First, before anything installs: a key in the repository fails the push.
-      - run: python3 scripts/scan_secrets.py
-      - run: uv sync
-      - run: uv run ruff check .
-      # Green on day one: what you have not written yet is xfail, and turns into a real
-      # test as soon as you write it.
-      - run: uv run pytest
+      - name: Scan repository for secrets
+        run: python3 scripts/scan_secrets.py
+      - name: Install locked dependencies
+        run: uv sync
+      - name: Lint buyer, server, and tests
+        run: uv run ruff check buyer server tests
+      - name: Run test suite
+        run: uv run python -m pytest -q
 
-  recorded-cases:
-    # A report, not a gate: it shows how many of the five cases and the trap already end
-    # the way their fixtures expect. It starts at 0/6 and that is the starting line.
+  recorded-safety:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
@@ -42,18 +40,12 @@ jobs:
       - uses: astral-sh/setup-uv@v5
         with:
           python-version: "3.11"
-      - run: uv sync
-      - name: the five cases and the trap, offline
+      - name: Install locked dependencies
+        run: uv sync
+      - name: Run recorded purchase cases
+        run: uv run buyer --cases --recorded
+      - name: Run stale and tampered safety cards
+        run: uv run buyer --cards --recorded
+      - name: Report Project 03 score
         continue-on-error: true
-        run: |
-          set +e
-          uv run buyer --cases | tee cases.txt
-          status=${PIPESTATUS[0]}
-          {
-            echo "### Recorded cases (offline, no key)"
-            echo
-            echo '```'
-            tail -n 1 cases.txt
-            echo '```'
-          } >> "$GITHUB_STEP_SUMMARY"
-          exit "$status"
+        run: uv run python projects/03-the-part-that-says-no/check.py
